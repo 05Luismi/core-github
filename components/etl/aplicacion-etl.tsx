@@ -5,6 +5,7 @@ import { CircleAlertIcon, CircleCheckIcon } from "lucide-react"
 
 import { ConfiguracionExtraccion } from "@/components/etl/configuracion-extraccion"
 import { Contadores } from "@/components/etl/contadores"
+import { MapaCiudades } from "@/components/etl/mapa-ciudades"
 import { PestanaCarga } from "@/components/etl/pestana-carga"
 import { PestanaJson } from "@/components/etl/pestana-json"
 import { PestanaRechazados } from "@/components/etl/pestana-rechazados"
@@ -73,6 +74,7 @@ export function AplicacionEtl() {
         <main className="flex min-w-0 flex-col gap-6">
           <VisualizacionPipeline etl={etl} onInspeccionar={inspeccionar} />
           <Contadores etl={etl} />
+          <MapaCiudades etl={etl} />
 
           <section ref={zonaDatos} aria-labelledby="titulo-inspeccion" className="flex scroll-mt-4 flex-col gap-3">
             <h2 id="titulo-inspeccion" className="text-base font-medium">

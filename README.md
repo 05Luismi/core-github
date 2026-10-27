@@ -22,6 +22,7 @@ npm run dev                  # http://localhost:3000
 | `SUPABASE_SECRET_KEY` | **solo servidor** | Secret key `sb_secret_...` (rol `service_role`). Nunca con prefijo `NEXT_PUBLIC_`. |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | no se usa | Opcional; toda la lectura/escritura pasa por el servidor. |
 | `ETL_PERMITIR_ESCRITURA` | servidor | En producción la escritura está bloqueada salvo `true`. |
+| `NEXT_PUBLIC_MAPTILER_KEY` | navegador | Clave de MapTiler para el mapa de ciudades. Pública: restríngela por dominio. |
 
 ### Base de datos
 

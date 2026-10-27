@@ -127,3 +127,28 @@
     @apply font-sans;
     }
 }
+/* Gráficas y mapa: tokens propios, con pasos seleccionados para cada modo. */
+:root {
+    --viz-surface: #fcfcfb;
+    --viz-ink: #0b0b0b;
+    --viz-ink-2: #52514e;
+    --viz-muted: #898781;
+    --viz-grid: #e1e0d9;
+    --viz-axis: #c3c2b7;
+    --viz-sin-datos: #c3c2b7;
+    --viz-temperatura: #eb6834;
+    --viz-humedad: #2a78d6;
+    --viz-precipitacion: #1baf7a;
+}
+.dark {
+    --viz-surface: #1a1a19;
+    --viz-ink: #f0efec;
+    --viz-ink-2: #c3c2b7;
+    --viz-muted: #898781;
+    --viz-grid: #2c2c2a;
+    --viz-axis: #383835;
+    --viz-sin-datos: #52514e;
+    --viz-temperatura: #d95926;
+    --viz-humedad: #3987e5;
+    --viz-precipitacion: #199e70;
+}
