@@ -1,7 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from "lucide-react"
+import {
+  ArrowDownIcon,
+  ArrowUpDownIcon,
+  ArrowUpIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+} from "lucide-react"
 import { cn } from "cn"
 
 import { Button } from "@/components/ui/button"
@@ -22,6 +30,57 @@ export type Columna<T> = {
   celda: (fila: T, posicion: number) => React.ReactNode
   numerica?: boolean
   className?: string
+  /** Campo por el que se ordena al pulsar la cabecera. Sin él, la columna no es ordenable. */
+  campoOrden?: string
+}
+
+export type OrdenTabla = { campo: string; direccion: "asc" | "desc" }
+
+/** Siguiente orden al pulsar una cabecera: misma columna invierte, otra empieza ascendente. */
+export function alternarOrden<O extends OrdenTabla>(actual: O, campo: O["campo"]): O {
+  return {
+    ...actual,
+    campo,
+    direccion: actual.campo === campo && actual.direccion === "asc" ? "desc" : "asc",
+  }
+}
+
+/** Contenido de una cabecera ordenable: botón con flecha que indica el orden actual. */
+export function EncabezadoOrdenable({
+  texto,
+  campo,
+  orden,
+  onOrdenar,
+  numerica,
+}: {
+  texto: React.ReactNode
+  campo: string
+  orden: OrdenTabla
+  onOrdenar: (campo: string) => void
+  numerica?: boolean
+}) {
+  const activo = orden.campo === campo
+  const Icono = !activo ? ArrowUpDownIcon : orden.direccion === "asc" ? ArrowUpIcon : ArrowDownIcon
+  return (
+    <button
+      type="button"
+      onClick={() => onOrdenar(campo)}
+      title="Ordenar por esta columna"
+      className={cn(
+        "-mx-1 inline-flex items-center gap-1 rounded px-1 py-0.5 hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        numerica && "flex-row-reverse",
+        activo && "text-primary-strong"
+      )}
+    >
+      {texto}
+      <Icono aria-hidden className={cn("size-3.5", !activo && "opacity-40")} />
+    </button>
+  )
+}
+
+export function ariaSort(orden: OrdenTabla | undefined, campo: string | undefined) {
+  if (!orden || !campo || orden.campo !== campo) return undefined
+  return orden.direccion === "asc" ? "ascending" : "descending"
 }
 
 export const TAMANOS_PAGINA = [25, 50, 100]
@@ -38,6 +97,8 @@ export function TablaPaginada<T>({
   vacio = "No hay registros.",
   etiqueta,
   claseFila,
+  orden,
+  onOrdenar,
 }: {
   filas: T[]
   columnas: Columna<T>[]
@@ -47,6 +108,9 @@ export function TablaPaginada<T>({
   vacio?: React.ReactNode
   etiqueta: string
   claseFila?: (fila: T) => string | undefined
+  /** Orden actual: activa las cabeceras ordenables (columnas con `campoOrden`). */
+  orden?: OrdenTabla
+  onOrdenar?: (campo: string) => void
 }) {
   const [pagina, setPagina] = React.useState(1)
   const [tamano, setTamano] = React.useState(25)
@@ -67,8 +131,21 @@ export function TablaPaginada<T>({
                 <TableHead
                   key={c.id}
                   className={cn(c.numerica && "text-right", c.className)}
+                  aria-sort={onOrdenar ? ariaSort(orden, c.campoOrden) : undefined}
                 >
-                  {typeof c.encabezado === "function" ? c.encabezado(p.filas) : c.encabezado}
+                  {typeof c.encabezado === "function" ? (
+                    c.encabezado(p.filas)
+                  ) : c.campoOrden && orden && onOrdenar ? (
+                    <EncabezadoOrdenable
+                      texto={c.encabezado}
+                      campo={c.campoOrden}
+                      orden={orden}
+                      onOrdenar={onOrdenar}
+                      numerica={c.numerica}
+                    />
+                  ) : (
+                    c.encabezado
+                  )}
                 </TableHead>
               ))}
             </TableRow>

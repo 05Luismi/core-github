@@ -1,12 +1,21 @@
 "use client"
 
+import * as React from "react"
 import { CircleAlertIcon, DatabaseIcon, InfoIcon, RotateCwIcon, UploadCloudIcon } from "lucide-react"
 
 import { EstadoFaseBadge } from "@/components/etl/estado-fase"
 import { COLUMNAS_MEDICION } from "@/components/etl/pestana-validos"
-import { TablaPaginada, type Columna } from "@/components/etl/tabla-paginada"
+import { alternarOrden, TablaPaginada, type Columna } from "@/components/etl/tabla-paginada"
+import {
+  AlertDialog,
+  AlertDialogClose,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
 import {
   Table,
   TableBody,
@@ -17,6 +26,7 @@ import {
 } from "@/components/ui/table"
 import type { EstadoFase, PipelineEtl } from "@/hooks/use-pipeline-etl"
 import { TAMANO_LOTE, type EstadoLote } from "@/lib/etl/carga"
+import type { CampoOrden } from "@/lib/etl/filtros"
 import { formatearDuracion, formatearEntero, formatearFechaUtc, formatearNumero } from "@/lib/etl/formato"
 import type { RegistroMedicion, RegistroValido } from "@/lib/etl/tipos"
 
@@ -46,6 +56,8 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
   const s = etl.estadoSupabase
   const carga = etl.carga
   const lotesPrevistos = Math.ceil(aCargar.length / TAMANO_LOTE)
+  const [confirmando, setConfirmando] = React.useState(false)
+  const ciudadesACargar = new Set(aCargar.map((r) => r.ciudad)).size
 
   const bloqueoSupabase = !s
     ? "Comprobando la conexión con Supabase…"
@@ -74,11 +86,53 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
             Huella del conjunto: <code>{etl.huellaVistaPrevia}</code> (cambia si cambia cualquier fila o el orden)
           </p>
         </div>
-        <Button size="lg" disabled={deshabilitado} onClick={etl.cargar}>
+        <Button size="lg" disabled={deshabilitado} onClick={() => setConfirmando(true)}>
           <UploadCloudIcon data-icon="inline-start" />
           {etl.cargando ? "Subiendo…" : `Subir ${formatearEntero(aCargar.length)} registros a Supabase`}
         </Button>
       </div>
+
+      <AlertDialog open={confirmando} onOpenChange={setConfirmando}>
+        <AlertDialogContent>
+          <div className="flex items-start gap-3">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary-strong">
+              <UploadCloudIcon aria-hidden className="size-4.5" />
+            </span>
+            <div className="flex flex-col gap-1">
+              <AlertDialogTitle>¿Subir {formatearEntero(aCargar.length)} registros a Supabase?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Se escribirán en la tabla <code>mediciones_meteorologicas</code>. Si ya existe una fila con
+                la misma ciudad y hora, se <strong>sobrescribe</strong> con los valores nuevos.
+              </AlertDialogDescription>
+            </div>
+          </div>
+          <dl className="grid grid-cols-3 gap-2 rounded-lg bg-muted/60 p-3 text-center">
+            {[
+              ["Registros", formatearEntero(aCargar.length)],
+              ["Ciudades", formatearEntero(ciudadesACargar)],
+              ["Lotes", `${lotesPrevistos} × ≤${TAMANO_LOTE}`],
+            ].map(([t, v]) => (
+              <div key={t}>
+                <dt className="text-xs text-muted-foreground">{t}</dt>
+                <dd className="font-semibold tabular-nums">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="flex justify-end gap-2">
+            <AlertDialogClose render={<Button variant="outline" />}>Cancelar</AlertDialogClose>
+            <Button
+              disabled={deshabilitado}
+              onClick={() => {
+                setConfirmando(false)
+                etl.cargar()
+              }}
+            >
+              <UploadCloudIcon data-icon="inline-start" />
+              Sí, subir
+            </Button>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {bloqueoSupabase && aCargar.length > 0 && (
         <Alert variant={s ? "destructive" : "default"}>
@@ -111,6 +165,12 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
               </Button>
             )}
           </div>
+          {etl.cargando && (
+            <Progress
+              value={Math.round(((completados.length + fallidos.length) / Math.max(1, carga.lotes.length)) * 100)}
+              etiqueta={carga.verificando ? "Verificando en Supabase…" : `Lotes procesados: ${completados.length + fallidos.length} de ${carga.lotes.length}`}
+            />
+          )}
           <p className="text-xs text-muted-foreground">
             Copia congelada al pulsar el botón: {formatearEntero(carga.congelados.length)} registros, huella{" "}
             <code>{carga.huella}</code>.{" "}
@@ -224,7 +284,9 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
           filas={aCargar}
           columnas={COLUMNAS_VISTA}
           claveFila={(r) => r.clave}
-          vacio="No hay filas seleccionadas que cumplan los filtros. Selecciónalas en «Registros válidos»."
+          orden={etl.orden}
+          onOrdenar={(campo) => etl.setOrden(alternarOrden(etl.orden, campo as CampoOrden))}
+          vacio="No hay filas seleccionadas que cumplan los filtros. Selecciónalas en Datos → Válidos."
         />
       </section>
     </div>

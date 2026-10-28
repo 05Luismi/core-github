@@ -4,6 +4,7 @@ import * as React from "react"
 import { CircleAlertIcon, DatabaseIcon, RefreshCwIcon } from "lucide-react"
 
 import { claseSelect } from "@/components/etl/pestana-validos"
+import { alternarOrden, ariaSort, EncabezadoOrdenable } from "@/components/etl/tabla-paginada"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -100,6 +101,18 @@ export function PestanaSupabase({ etl }: { etl: PipelineEtl }) {
   }
 
   const c = peticion.consulta
+
+  const ordenarPor = (campo: string) => {
+    const nuevo = alternarOrden({ campo: c.orden, direccion: c.direccion }, campo)
+    setBorrador((b) => ({ ...b, orden: nuevo.campo, direccion: nuevo.direccion }))
+    consultar({ orden: nuevo.campo, direccion: nuevo.direccion, pagina: 1 })
+  }
+  const ordenActual = { campo: c.orden, direccion: c.direccion }
+  const cabecera = (campo: string, texto: string, numerica = false) => (
+    <TableHead key={campo} className={numerica ? "text-right" : undefined} aria-sort={ariaSort(ordenActual, campo)}>
+      <EncabezadoOrdenable texto={texto} campo={campo} orden={ordenActual} onOrdenar={ordenarPor} numerica={numerica} />
+    </TableHead>
+  )
   const total = resultado?.ok ? resultado.total : 0
   const totalPaginas = Math.max(1, Math.ceil(total / c.tamano))
   const pendientes = etl.conjunto.aCargar.length
@@ -171,12 +184,12 @@ export function PestanaSupabase({ etl }: { etl: PipelineEtl }) {
           <TableHeader className="bg-muted/50">
             <TableRow>
               <TableHead className="text-right">id</TableHead>
-              <TableHead>Ciudad</TableHead>
-              <TableHead>Fecha y hora (UTC)</TableHead>
-              <TableHead className="text-right">Temperatura (°C)</TableHead>
-              <TableHead className="text-right">Humedad (%)</TableHead>
-              <TableHead className="text-right">Precipitación (mm)</TableHead>
-              <TableHead>Importado en (UTC)</TableHead>
+              {cabecera("ciudad", "Ciudad")}
+              {cabecera("fecha_hora", "Fecha y hora (UTC)")}
+              {cabecera("temperatura_c", "Temperatura (°C)", true)}
+              {cabecera("humedad_pct", "Humedad (%)", true)}
+              {cabecera("precipitacion_mm", "Precipitación (mm)", true)}
+              {cabecera("importado_en", "Importado en (UTC)")}
             </TableRow>
           </TableHeader>
           <TableBody>

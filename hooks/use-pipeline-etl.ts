@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { avisos } from "@/components/ui/toaster"
 import {
   congelar,
   crearLotes,
@@ -22,6 +23,7 @@ import {
   type FormularioFiltros,
   type Orden,
 } from "@/lib/etl/filtros"
+import { formatearEntero } from "@/lib/etl/formato"
 import { limpiar, type ResultadoLimpieza } from "@/lib/etl/limpieza"
 import { medir } from "@/lib/etl/medir"
 import type { RegistroMedicion, RegistroTransformado } from "@/lib/etl/tipos"
@@ -202,13 +204,13 @@ export function usePipelineEtl() {
     }
   }
 
-  /** Transformación y limpieza sobre todas las respuestas correctas de la sesión. */
-  const procesar = (lista: ExtraccionCiudad[]) => {
+  /** Transformación y limpieza sobre todas las respuestas correctas de la sesión. Devuelve cuántos válidos hay. */
+  const procesar = (lista: ExtraccionCiudad[]): number => {
     const correctas = lista.filter((e) => e.estado === "completada")
     if (!correctas.length) {
       setProcesado(null)
       setSeleccion(new Set())
-      return
+      return 0
     }
     const t = medir(() => {
       const transformados: RegistroTransformado[] = []
@@ -231,6 +233,24 @@ export function usePipelineEtl() {
     // Conserva la selección solo para claves que siguen siendo válidas.
     const claves = new Set(l.resultado.validos.map((v) => v.clave))
     setSeleccion((prev) => new Set([...prev].filter((k) => claves.has(k))))
+    return l.resultado.validos.length
+  }
+
+  const avisarExtraccion = (validos: number) => {
+    const lista = extraccionesRef.current
+    const fallidas = lista.filter((e) => e.estado === "error")
+    if (fallidas.length)
+      avisos.add({
+        type: "error",
+        title: `${fallidas.length} de ${lista.length} ciudades fallaron`,
+        description: `${fallidas.map((e) => e.nombre).join(", ")}. Puedes reintentarlas desde la configuración.`,
+      })
+    else
+      avisos.add({
+        type: "success",
+        title: "Extracción completada",
+        description: `${lista.length} ${lista.length === 1 ? "ciudad" : "ciudades"} · ${formatearEntero(validos)} registros válidos listos para filtrar.`,
+      })
   }
 
   const extraer = async (inicio: string, fin: string, ciudadIds: string[]) => {
@@ -258,7 +278,7 @@ export function usePipelineEtl() {
     setOrden(ORDEN_INICIAL)
     // Secuencial: permite ver qué ciudades se han procesado y cuáles quedan.
     for (const id of ciudadIds) await descargar(id, s)
-    procesar(extraccionesRef.current)
+    avisarExtraccion(procesar(extraccionesRef.current))
     extrayendoRef.current = false
     setExtrayendo(false)
   }
@@ -268,7 +288,7 @@ export function usePipelineEtl() {
     extrayendoRef.current = true
     setExtrayendo(true)
     await descargar(ciudadId, sesion)
-    procesar(extraccionesRef.current)
+    avisarExtraccion(procesar(extraccionesRef.current))
     extrayendoRef.current = false
     setExtrayendo(false)
   }
@@ -327,6 +347,20 @@ export function usePipelineEtl() {
       finales.some((l) => l.estado === "error") ||
       (verificacion !== null &&
         (verificacion.faltantes.length > 0 || verificacion.errores.length > 0))
+    const correctos = enviados.length
+    avisos.add(
+      hayErrores
+        ? {
+            type: "error",
+            title: "La carga terminó con errores",
+            description: `${formatearEntero(correctos)} de ${formatearEntero(base.congelados.length)} registros enviados. Revisa el informe y reintenta los lotes fallidos.`,
+          }
+        : {
+            type: "success",
+            title: "Carga completada y verificada",
+            description: `${formatearEntero(correctos)} registros guardados en Supabase.`,
+          }
+    )
     setCarga({
       ...base,
       lotes: finales,

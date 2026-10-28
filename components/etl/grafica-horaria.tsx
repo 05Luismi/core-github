@@ -41,7 +41,7 @@ const PANELES: Panel[] = [
   },
 ]
 
-function useAncho(ref: React.RefObject<HTMLElement | null>): number {
+export function useAncho(ref: React.RefObject<HTMLElement | null>): number {
   const [ancho, setAncho] = React.useState(0)
   React.useEffect(() => {
     if (!ref.current) return
@@ -64,13 +64,22 @@ function masCercano(tiempos: number[], t: number): number {
   return Math.abs(tiempos[lo] - t) <= Math.abs(tiempos[hi] - t) ? lo : hi
 }
 
-export function GraficaHoraria({ serie, ciudad }: { serie: RegistroMedicion[]; ciudad: string }) {
+export function GraficaHoraria({
+  serie,
+  ciudad,
+  altoPanel = ALTO_PANEL,
+}: {
+  serie: RegistroMedicion[]
+  ciudad: string
+  /** Alto de cada uno de los tres paneles (más bajo para la vista compacta sobre el mapa). */
+  altoPanel?: number
+}) {
   const caja = React.useRef<HTMLDivElement>(null)
   const ancho = useAncho(caja)
   const [indice, setIndice] = React.useState<number | null>(null)
 
   const tiempos = React.useMemo(() => serie.map((r) => Date.parse(r.fecha_hora)), [serie])
-  const alto = PANELES.length * (ALTO_TITULO + ALTO_PANEL + SEPARACION) - SEPARACION + ALTO_EJE_X
+  const alto = PANELES.length * (ALTO_TITULO + altoPanel + SEPARACION) - SEPARACION + ALTO_EJE_X
   const anchoPlot = Math.max(0, ancho - MARGEN.izquierda - MARGEN.derecha)
 
   if (serie.length < 2) {
@@ -130,8 +139,8 @@ export function GraficaHoraria({ serie, ciudad }: { serie: RegistroMedicion[]; c
           {PANELES.map((p, n) => {
             const valores = serie.map((r) => r[p.clave])
             const [d0, d1] = p.dominio(valores)
-            const arriba = n * (ALTO_TITULO + ALTO_PANEL + SEPARACION) + ALTO_TITULO
-            const y = (v: number) => arriba + ALTO_PANEL - ((v - d0) / (d1 - d0)) * ALTO_PANEL
+            const arriba = n * (ALTO_TITULO + altoPanel + SEPARACION) + ALTO_TITULO
+            const y = (v: number) => arriba + altoPanel - ((v - d0) / (d1 - d0)) * altoPanel
             const marcasY = [d0, (d0 + d1) / 2, d1]
             const ruta = serie.map((r, i) => `${i ? "L" : "M"}${x(tiempos[i]).toFixed(1)},${y(r[p.clave]).toFixed(1)}`).join("")
             const anchoBarra = Math.max(1, paso - (paso > 4 ? 2 : 0))

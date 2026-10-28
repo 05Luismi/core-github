@@ -1,4 +1,5 @@
-import type { RegistroMedicion } from "./tipos"
+import { CIUDADES, buscarCiudad } from "./ciudades"
+import type { RegistroMedicion, RegistroRechazado } from "./tipos"
 
 export type ResumenCiudad = {
   horas: number
@@ -47,6 +48,67 @@ export function resumirPorCiudad(registros: readonly RegistroMedicion[]): Map<st
   return salida
 }
 
+export type ResumenDia = {
+  /** Día UTC, "AAAA-MM-DD". */
+  dia: string
+  temperaturaMedia: number
+  temperaturaMin: number
+  temperaturaMax: number
+  humedadMedia: number
+  /** Precipitación del día dividida entre las ciudades con datos ese día (mm por ciudad). */
+  precipitacionMedia: number
+  ciudades: number
+}
+
+/** Agrega los registros válidos por día UTC (todas las ciudades juntas), en orden cronológico. */
+export function resumirPorDia(registros: readonly RegistroMedicion[]): ResumenDia[] {
+  const dias = new Map<string, { n: number; t: number; h: number; p: number; min: number; max: number; ciudades: Set<string> }>()
+  for (const r of registros) {
+    const dia = r.fecha_hora.slice(0, 10)
+    const a = dias.get(dia) ?? { n: 0, t: 0, h: 0, p: 0, min: Infinity, max: -Infinity, ciudades: new Set<string>() }
+    a.n++
+    a.t += r.temperatura_c
+    a.h += r.humedad_pct
+    a.p += r.precipitacion_mm
+    a.min = Math.min(a.min, r.temperatura_c)
+    a.max = Math.max(a.max, r.temperatura_c)
+    a.ciudades.add(r.ciudad)
+    dias.set(dia, a)
+  }
+  return [...dias]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([dia, a]) => ({
+      dia,
+      temperaturaMedia: a.t / a.n,
+      temperaturaMin: a.min,
+      temperaturaMax: a.max,
+      humedadMedia: a.h / a.n,
+      precipitacionMedia: a.p / a.ciudades.size,
+      ciudades: a.ciudades.size,
+    }))
+}
+
+export type ConteoCiudad = { ciudad: string; validos: number; rechazados: number }
+
+/** Válidos y rechazados por ciudad, en el orden de la lista de ciudades (las desconocidas al final). */
+export function contarPorCiudad(
+  validos: readonly RegistroMedicion[],
+  rechazados: readonly RegistroRechazado[]
+): ConteoCiudad[] {
+  const conteos = new Map<string, ConteoCiudad>()
+  const de = (ciudad: string) => {
+    const c = conteos.get(ciudad) ?? { ciudad, validos: 0, rechazados: 0 }
+    conteos.set(ciudad, c)
+    return c
+  }
+  for (const r of validos) de(r.ciudad).validos++
+  for (const { registro } of rechazados)
+    de(registro.ciudad ?? buscarCiudad(registro.ciudadId)?.nombre ?? registro.ciudadId).rechazados++
+  const orden = CIUDADES.map((c) => c.nombre)
+  const posicion = (n: string) => (orden.includes(n) ? orden.indexOf(n) : orden.length)
+  return [...conteos.values()].sort((a, b) => posicion(a.ciudad) - posicion(b.ciudad))
+}
+
 export type Metrica = "temperatura" | "humedad" | "precipitacion"
 
 export const METRICAS: Record<Metrica, { texto: string; unidad: string; valor: (r: ResumenCiudad) => number }> = {
@@ -56,7 +118,7 @@ export const METRICAS: Record<Metrica, { texto: string; unidad: string; valor: (
 }
 
 // Rampa secuencial de un solo tono (claro → oscuro) para la magnitud de la métrica en el mapa.
-export const RAMPA_SECUENCIAL = ["#b7d3f6", "#86b6ef", "#5598e7", "#2a78d6", "#1c5cab", "#104281"] as const
+export const RAMPA_SECUENCIAL = ["#fde3cf", "#fbc49b", "#f8a266", "#f07f36", "#d4611a", "#a3460f"] as const
 
 /** Paso de la rampa para t ∈ [0, 1] (se recorta fuera de rango). */
 export function colorRampa(t: number): string {

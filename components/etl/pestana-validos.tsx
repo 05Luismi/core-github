@@ -2,7 +2,7 @@
 
 import { CircleAlertIcon, ListChecksIcon, RotateCcwIcon, XIcon } from "lucide-react"
 
-import { TablaPaginada, type Columna } from "@/components/etl/tabla-paginada"
+import { alternarOrden, TablaPaginada, type Columna } from "@/components/etl/tabla-paginada"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -26,11 +26,11 @@ export const claseSelect =
   "h-8 rounded-lg border border-input bg-background px-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
 
 export const COLUMNAS_MEDICION: Columna<RegistroValido>[] = [
-  { id: "ciudad", encabezado: "Ciudad", celda: (r) => r.ciudad },
-  { id: "fecha", encabezado: "Fecha y hora (UTC)", celda: (r) => formatearFechaUtc(r.fecha_hora), className: "tabular-nums" },
-  { id: "t", encabezado: "Temperatura (°C)", celda: (r) => formatearNumero(r.temperatura_c), numerica: true },
-  { id: "h", encabezado: "Humedad (%)", celda: (r) => formatearNumero(r.humedad_pct), numerica: true },
-  { id: "p", encabezado: "Precipitación (mm)", celda: (r) => formatearNumero(r.precipitacion_mm), numerica: true },
+  { id: "ciudad", encabezado: "Ciudad", celda: (r) => r.ciudad, campoOrden: "ciudad" },
+  { id: "fecha", encabezado: "Fecha y hora (UTC)", celda: (r) => formatearFechaUtc(r.fecha_hora), className: "tabular-nums", campoOrden: "fecha_hora" },
+  { id: "t", encabezado: "Temperatura (°C)", celda: (r) => formatearNumero(r.temperatura_c), numerica: true, campoOrden: "temperatura_c" },
+  { id: "h", encabezado: "Humedad (%)", celda: (r) => formatearNumero(r.humedad_pct), numerica: true, campoOrden: "humedad_pct" },
+  { id: "p", encabezado: "Precipitación (mm)", celda: (r) => formatearNumero(r.precipitacion_mm), numerica: true, campoOrden: "precipitacion_mm" },
 ]
 
 function Rango({
@@ -105,9 +105,9 @@ export function PestanaValidos({ etl }: { etl: PipelineEtl }) {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-muted-foreground">
-        Orden de operaciones: <strong>válidos → filtros → ordenación → selección → carga</strong>. La
-        paginación solo cambia lo que ves. Al cambiar los filtros no se selecciona nada
-        automáticamente.
+        Orden de operaciones: <strong>válidos → filtros → ordenación → selección → carga</strong>. Pulsa
+        una cabecera para ordenar. La paginación solo cambia lo que ves. Al cambiar los filtros no se
+        selecciona nada automáticamente.
       </p>
 
       <form
@@ -218,7 +218,9 @@ export function PestanaValidos({ etl }: { etl: PipelineEtl }) {
         columnas={columnas}
         claveFila={(r) => r.clave}
         reinicio={JSON.stringify([f, etl.orden])}
-        claseFila={(r) => (etl.seleccion.has(r.clave) ? "bg-muted/60" : undefined)}
+        claseFila={(r) => (etl.seleccion.has(r.clave) ? "bg-primary/8" : undefined)}
+        orden={etl.orden}
+        onOrdenar={(campo) => etl.setOrden(alternarOrden(etl.orden, campo as CampoOrden))}
         vacio="Ningún registro válido cumple los filtros actuales."
       />
     </div>

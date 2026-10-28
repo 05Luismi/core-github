@@ -130,8 +130,8 @@ export function VisualizacionPipeline({
   const fases = calcularFases(etl)
   return (
     <section aria-labelledby="titulo-pipeline" className="flex flex-col gap-3">
-      <h2 id="titulo-pipeline" className="text-base font-medium">
-        2. Pipeline ETL
+      <h2 id="titulo-pipeline" className="sr-only">
+        Fases del pipeline ETL
       </h2>
       <ol className="grid grid-cols-1 gap-2 lg:grid-cols-[repeat(5,minmax(0,1fr))] lg:gap-0">
         {fases.map((f, i) => (

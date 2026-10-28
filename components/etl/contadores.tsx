@@ -1,7 +1,17 @@
+"use client"
+
+import * as React from "react"
 import { TriangleAlertIcon } from "lucide-react"
+import { cn } from "cn"
 
 import type { PipelineEtl } from "@/hooks/use-pipeline-etl"
+import { useNumeroAnimado } from "@/hooks/use-numero-animado"
 import { formatearEntero } from "@/lib/etl/formato"
+
+function Valor({ valor }: { valor: number | undefined }) {
+  const animado = useNumeroAnimado(valor ?? 0)
+  return <>{valor === undefined ? "—" : formatearEntero(animado)}</>
+}
 
 export function Contadores({ etl }: { etl: PipelineEtl }) {
   const p = etl.procesado
@@ -15,18 +25,22 @@ export function Contadores({ etl }: { etl: PipelineEtl }) {
   return (
     <section aria-label="Contadores del pipeline" className="flex flex-col gap-2">
       <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-        {items.map((i) => (
+        {items.map((i, n) => (
           <div
             key={i.etiqueta}
-            className={
+            style={{ "--retraso": `${n * 50}ms` } as React.CSSProperties}
+            className={cn(
+              "entrada elevable rounded-xl p-3",
               i.destacado
-                ? "rounded-xl bg-primary p-3 text-primary-foreground"
-                : "rounded-xl bg-card p-3 ring-1 ring-foreground/10"
-            }
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/35"
+                : n === 0
+                  ? "bg-black text-orange-50 shadow-lg shadow-primary/20"
+                  : "sombra-suave bg-card ring-1 ring-primary/15"
+            )}
           >
             <dt className="text-xs opacity-80">{i.etiqueta}</dt>
-            <dd className="text-2xl font-semibold tabular-nums">
-              {i.valor === undefined ? "—" : formatearEntero(i.valor)}
+            <dd className={cn("text-2xl font-semibold tabular-nums", n === 0 && "text-primary")}>
+              <Valor valor={i.valor} />
             </dd>
             <dd className="text-xs opacity-70">{i.ayuda}</dd>
           </div>
