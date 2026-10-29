@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { CircleAlertIcon, DatabaseIcon, InfoIcon, RotateCwIcon, UploadCloudIcon } from "lucide-react"
+import { cn } from "cn"
 
 import { EstadoFaseBadge } from "@/components/etl/estado-fase"
 import { COLUMNAS_MEDICION } from "@/components/etl/pestana-validos"
@@ -51,6 +52,41 @@ const ESTADO_LOTE: Record<EstadoLote["estado"], { estado: EstadoFase; texto: str
   error: { estado: "error", texto: "Error" },
 }
 
+const COLOR_LOTE: Record<EstadoLote["estado"], string> = {
+  pendiente: "var(--viz-sin-datos)",
+  enviando: "var(--primary)",
+  completado: "var(--viz-validos)",
+  error: "var(--viz-rechazados)",
+}
+
+/** Un cubo 3D por lote: se enciende al completarse, late mientras se envía y se pone rojo si falla. */
+function CubosLotes({ lotes }: { lotes: readonly EstadoLote[] }) {
+  return (
+    <ul aria-label="Lotes como bloques" className="flex flex-wrap gap-3 py-1">
+      {lotes.map((l, i) => {
+        const color = COLOR_LOTE[l.estado]
+        return (
+          <li
+            key={l.numero}
+            title={`Lote ${l.numero}: ${ESTADO_LOTE[l.estado].texto}`}
+            className={cn("aparecer group relative", l.estado === "enviando" && "animate-pulse")}
+            style={{ "--retraso": `${i * 50}ms` } as React.CSSProperties}
+          >
+            <svg viewBox="0 0 44 44" className="size-11 transition-transform duration-200 group-hover:-translate-y-1 group-hover:scale-110" aria-hidden>
+              <path d="M6,14 L22,6 L38,14 L22,22Z" style={{ fill: `color-mix(in oklch, ${color} 72%, white)` }} />
+              <path d="M6,14 L22,22 L22,40 L6,32Z" style={{ fill: color }} />
+              <path d="M38,14 L22,22 L22,40 L38,32Z" style={{ fill: `color-mix(in oklch, ${color} 55%, black)` }} />
+            </svg>
+            <span className="hud-etiqueta absolute -bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-muted-foreground tabular-nums">
+              {String(l.numero).padStart(2, "0")}
+            </span>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
   const { aCargar } = etl.conjunto
   const s = etl.estadoSupabase
@@ -76,7 +112,7 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-3 rounded-xl bg-muted/40 p-3 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 rounded-xl bg-card p-3 hud-marco foco cristal ring-1 ring-primary/20 sm:flex-row sm:items-center">
         <div className="mr-auto flex flex-col gap-0.5">
           <p className="font-medium">
             Se enviarán <span className="tabular-nums">{formatearEntero(aCargar.length)}</span> registros en{" "}
@@ -106,7 +142,7 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
               </AlertDialogDescription>
             </div>
           </div>
-          <dl className="grid grid-cols-3 gap-2 rounded-lg bg-muted/60 p-3 text-center">
+          <dl className="grid grid-cols-3 gap-2 rounded-lg bg-primary/5 p-3 ring-1 ring-primary/20 text-center">
             {[
               ["Registros", formatearEntero(aCargar.length)],
               ["Ciudades", formatearEntero(ciudadesACargar)],
@@ -152,7 +188,7 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
       </Alert>
 
       {carga && (
-        <section aria-labelledby="titulo-informe" className="flex flex-col gap-3 rounded-xl p-3 ring-1 ring-foreground/10">
+        <section aria-labelledby="titulo-informe" className="flex flex-col gap-3 rounded-xl bg-card p-3 hud-marco cristal ring-1 ring-primary/20">
           <div className="flex flex-wrap items-center gap-2">
             <h3 id="titulo-informe" className="mr-auto font-medium">
               Informe de la carga
@@ -186,7 +222,7 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
               ["Registros en lotes fallidos", registrosFallidos],
               ["Pendientes", carga.congelados.length - registrosOk - registrosFallidos],
             ].map(([t, v]) => (
-              <div key={t} className="rounded-lg bg-muted/50 p-2">
+              <div key={t} className="rounded-lg border-l-2 border-primary bg-primary/5 p-2">
                 <dt className="text-xs text-muted-foreground">{t}</dt>
                 <dd className="text-lg font-semibold tabular-nums">{formatearEntero(v as number)}</dd>
               </div>
@@ -196,6 +232,8 @@ export function PestanaCarga({ etl }: { etl: PipelineEtl }) {
             El upsert no indica cuántas filas eran nuevas y cuántas se actualizaron, así que no se
             muestran por separado. Duración total: {formatearDuracion(carga.duracionMs)}.
           </p>
+
+          <CubosLotes lotes={carga.lotes} />
 
           <div className="overflow-x-auto rounded-lg border">
             <Table aria-label="Estado por lote">

@@ -112,7 +112,7 @@ export function PestanaValidos({ etl }: { etl: PipelineEtl }) {
 
       <form
         aria-label="Filtros"
-        className="grid grid-cols-1 gap-3 rounded-xl bg-muted/40 p-3 sm:grid-cols-2 xl:grid-cols-4"
+        className="grid grid-cols-1 gap-3 rounded-xl bg-card p-3 hud-marco foco cristal ring-1 ring-primary/20 sm:grid-cols-2 xl:grid-cols-4"
         onSubmit={(e) => e.preventDefault()}
       >
         <fieldset className="flex flex-col gap-1 sm:col-span-2 xl:col-span-4">

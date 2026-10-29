@@ -19,7 +19,7 @@ import {
 
 import { extraerEjemplo } from "@/components/etl/bienvenida"
 import { GraficaHoraria } from "@/components/etl/grafica-horaria"
-import type { Relleno } from "@/components/etl/mapa-interactivo"
+import type { EstiloMapa, Relleno } from "@/components/etl/mapa-interactivo"
 import { Button } from "@/components/ui/button"
 import type { PipelineEtl } from "@/hooks/use-pipeline-etl"
 import { CIUDADES } from "@/lib/etl/ciudades"
@@ -97,6 +97,9 @@ export function MapaCiudades({ etl, onIrAExtraccion }: { etl: PipelineEtl; onIrA
   const [listaAbierta, setListaAbierta] = React.useState(esAncho)
   const [graficaAbierta, setGraficaAbierta] = React.useState(true)
   const [opacos, setOpacos] = React.useState(false)
+  const [estilo, setEstilo] = React.useState<EstiloMapa>("satelite")
+  const [modo3d, setModo3d] = React.useState(false)
+  const [globo, setGlobo] = React.useState(false)
 
   const [panelCiudades, tamCiudades] = useTamano()
   const [panelGrafica, tamGrafica] = useTamano()
@@ -143,13 +146,15 @@ export function MapaCiudades({ etl, onIrAExtraccion }: { etl: PipelineEtl; onIrA
   }
 
   const cristal = cn(
-    "rounded-xl shadow-xl ring-1 ring-foreground/10 transition-colors",
-    opacos ? "bg-card" : "bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/55"
+    "hud-marco rounded-xl text-foreground shadow-xl shadow-black/40 ring-1 ring-primary/25 transition-colors",
+    opacos ? "bg-panel" : "bg-panel/70 backdrop-blur-md supports-[backdrop-filter]:bg-panel/55"
   )
 
   return (
     <div
-      className="relative w-full overflow-hidden bg-muted"
+      data-estilo={estilo}
+      // El mapa es siempre un visor HUD oscuro, también con el tema claro.
+      className="mapa-hud dark relative w-full overflow-hidden bg-panel text-foreground"
       style={{ height: "calc(100dvh - var(--alto-menu, 4rem))" }}
       onKeyDown={(e) => {
         if (e.key === "Escape") setCiudadActiva(null)
@@ -164,6 +169,9 @@ export function MapaCiudades({ etl, onIrAExtraccion }: { etl: PipelineEtl; onIrA
           ciudadActiva={ciudadActiva}
           onSeleccionar={alternar}
           relleno={relleno}
+          estilo={estilo}
+          modo3d={modo3d}
+          globo={globo}
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center p-6">
@@ -189,7 +197,7 @@ export function MapaCiudades({ etl, onIrAExtraccion }: { etl: PipelineEtl; onIrA
       >
         <div className="flex items-center gap-1.5">
           <MapIcon aria-hidden className="size-4 text-primary-strong" />
-          <h2 className="mr-auto text-sm font-semibold">Ciudades</h2>
+          <h2 className="hud-etiqueta mr-auto text-[11px] font-semibold">Seguimiento</h2>
           {ciudadActiva && (
             <Button size="xs" variant="ghost" onClick={() => setCiudadActiva(null)} title="Ver todas las ciudades">
               <LocateFixedIcon data-icon="inline-start" />
@@ -251,6 +259,35 @@ export function MapaCiudades({ etl, onIrAExtraccion }: { etl: PipelineEtl; onIrA
           })}
         </div>
 
+        {CLAVE_MAPTILER && (
+          <div role="group" aria-label="Modo del mapa" className="grid grid-cols-4 gap-1">
+            {[
+              { texto: "Satélite", activo: estilo === "satelite", accion: () => setEstilo("satelite") },
+              { texto: "Oscuro", activo: estilo === "oscuro", accion: () => setEstilo("oscuro") },
+              { texto: "Relieve 3D", activo: modo3d, accion: () => setModo3d((v) => !v) },
+              { texto: "Globo", activo: globo, accion: () => setGlobo((v) => !v) },
+            ].map((b) => (
+              <button
+                key={b.texto}
+                type="button"
+                aria-pressed={b.activo}
+                onClick={b.accion}
+                className={cn(
+                  "flex flex-col items-center gap-0.5 rounded-md border px-1 py-1 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-95",
+                  b.activo
+                    ? "border-primary bg-primary/15 text-foreground shadow-[0_0_10px] shadow-primary/30"
+                    : "border-primary/20 text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                )}
+              >
+                <span className={cn("hud-etiqueta text-[8px]", b.activo ? "text-primary" : "text-muted-foreground/70")}>
+                  {b.activo ? "Activo" : "Inactivo"}
+                </span>
+                <span className="text-[11px] font-medium whitespace-nowrap">{b.texto}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         {hayDatos && (
           <div className="flex items-center gap-1.5 px-0.5 text-[11px] text-muted-foreground tabular-nums">
             {formatearNumero(min)} {def.unidad}
@@ -282,12 +319,12 @@ export function MapaCiudades({ etl, onIrAExtraccion }: { etl: PipelineEtl; onIrA
                   >
                     <span
                       aria-hidden
-                      className="size-3 shrink-0 rounded-full ring-1 ring-foreground/15"
+                      className="size-3 shrink-0 rounded-full shadow-[0_0_8px] shadow-primary/50 ring-1 ring-foreground/15"
                       style={{ background: r ? colorRampa(fraccion(def.valor(r))) : "var(--viz-sin-datos)" }}
                     />
                     <span className="mr-auto truncate font-medium">{c.nombre}</span>
                     {r ? (
-                      <span className="text-xs tabular-nums">
+                      <span className="font-mono text-xs text-primary-strong tabular-nums">
                         {formatearNumero(def.valor(r))} {def.unidad}
                       </span>
                     ) : extraccion?.estado === "en_curso" ? (

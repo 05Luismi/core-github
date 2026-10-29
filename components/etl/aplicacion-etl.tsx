@@ -66,7 +66,7 @@ function ListaPestanas<T extends string>({
           <TabsTrigger key={t.valor} value={t.valor} className="px-2.5">
             {t.texto}
             {t.n !== undefined && (
-              <span className="rounded-full bg-muted px-1.5 text-xs tabular-nums">
+              <span className="rounded-full bg-black/25 px-1.5 text-xs tabular-nums">
                 {formatearEntero(t.n)}
               </span>
             )}

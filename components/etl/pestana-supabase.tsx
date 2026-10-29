@@ -130,7 +130,7 @@ export function PestanaSupabase({ etl }: { etl: PipelineEtl }) {
         </AlertDescription>
       </Alert>
 
-      <form onSubmit={aplicar} className="grid grid-cols-1 gap-3 rounded-xl bg-muted/40 p-3 sm:grid-cols-2 lg:grid-cols-5">
+      <form onSubmit={aplicar} className="grid grid-cols-1 gap-3 rounded-xl bg-card p-3 hud-marco foco cristal ring-1 ring-primary/20 sm:grid-cols-2 lg:grid-cols-5">
         <div className="flex flex-col gap-1">
           <Label htmlFor="sb-ciudad" className="text-xs">Ciudad</Label>
           <select id="sb-ciudad" className={claseSelect} value={borrador.ciudad} onChange={(e) => setBorrador({ ...borrador, ciudad: e.target.value })}>

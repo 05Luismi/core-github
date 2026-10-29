@@ -15,7 +15,6 @@ import {
 } from "lucide-react"
 import { cn } from "cn"
 
-import { BotonTema } from "@/components/boton-tema"
 import { ProgresoGlobal } from "@/components/etl/progreso-global"
 import { RelojHud } from "@/components/hud/reloj-hud"
 import type { PipelineEtl } from "@/hooks/use-pipeline-etl"
@@ -106,6 +105,22 @@ export function MenuSuperior({
     return () => obs.disconnect()
   }, [])
 
+  // Barra luminosa que se desliza hasta el apartado activo (y se recoloca si cambia el tamaño).
+  const lista = React.useRef<HTMLUListElement>(null)
+  const [indicadorPos, setIndicadorPos] = React.useState<{ left: number; width: number } | null>(null)
+  React.useEffect(() => {
+    const ul = lista.current
+    if (!ul) return
+    const colocar = () => {
+      const a = ul.querySelector<HTMLElement>("a[aria-current=page]")
+      setIndicadorPos(a ? { left: a.offsetLeft + 12, width: a.offsetWidth - 24 } : null)
+    }
+    colocar()
+    const obs = new ResizeObserver(colocar)
+    obs.observe(ul)
+    return () => obs.disconnect()
+  }, [vista])
+
   return (
     <header ref={ref} className="sticky top-0 z-40 border-b border-primary/30 bg-panel/85 text-panel-foreground shadow-lg shadow-primary/10 backdrop-blur-md">
       <div aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" />
@@ -118,7 +133,7 @@ export function MenuSuperior({
           <span className="hud-etiqueta tabular-nums">
             Paso {String(VISTAS.findIndex((v) => v.id === vista) + 1).padStart(2, "0")}/{String(VISTAS.length).padStart(2, "0")}
           </span>
-          <span className="hud-etiqueta hidden lg:inline">Atajos: 1–5 · ← → · D</span>
+          <span className="hud-etiqueta hidden lg:inline">Atajos: 1–5 · ← →</span>
           <span className="ml-auto flex items-center gap-4">
             <RelojHud />
           </span>
@@ -141,8 +156,15 @@ export function MenuSuperior({
             </span>
           </a>
 
-          <nav aria-label="Apartados" className="order-last -mx-4 w-[calc(100%+2rem)] overflow-x-auto px-4 md:order-none md:mx-0 md:ml-6 md:w-auto md:flex-1 md:px-0">
-            <ul className="flex gap-1">
+          <nav aria-label="Apartados" className="order-last -mx-4 w-[calc(100%+2rem)] overflow-x-auto overflow-y-hidden px-4 py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:order-none md:mx-0 md:ml-6 md:w-auto md:flex-1 md:px-0">
+            <ul ref={lista} className="relative flex gap-1">
+              {indicadorPos && (
+                <li
+                  aria-hidden
+                  className="pointer-events-none absolute -bottom-1.5 h-0.5 rounded-full bg-primary shadow-[0_0_10px] shadow-primary transition-all duration-300 ease-out"
+                  style={indicadorPos}
+                />
+              )}
               {VISTAS.map((v, i) => {
                 const activa = v.id === vista
                 const extra = indicador(v.id, etl)
@@ -160,14 +182,13 @@ export function MenuSuperior({
                         activa
                           ? "bg-primary/15 font-medium text-panel-foreground shadow-[inset_0_0_12px] shadow-primary/25 ring-1 ring-primary/40"
                           : "text-panel-foreground/60 hover:bg-primary/10 hover:text-panel-foreground",
-                        "after:absolute after:inset-x-3 after:-bottom-[7px] after:h-0.5 after:rounded-full after:bg-primary after:shadow-[0_0_8px] after:shadow-primary after:transition-all after:duration-300",
-                        activa ? "after:opacity-100" : "after:scale-x-0 after:opacity-0"
+                        "group/item hover:-translate-y-px"
                       )}
                     >
                       <span aria-hidden className="hud-etiqueta hidden text-primary/70 lg:inline">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <v.icono aria-hidden className={cn("size-4 transition-transform duration-200", activa && "scale-110 text-primary")} />
+                      <v.icono aria-hidden className={cn("size-4 transition-transform duration-200 group-hover/item:-rotate-12 group-hover/item:scale-125", activa && "scale-110 text-primary")} />
                       <span>
                         <span className="sr-only">{i + 1}. </span>
                         {v.texto}
@@ -191,7 +212,6 @@ export function MenuSuperior({
 
           <div className="ml-auto flex items-center gap-2">
             <EstadoSupabase etl={etl} />
-            <BotonTema className="border-primary/30 bg-transparent text-panel-foreground hover:bg-primary/15 hover:text-panel-foreground dark:border-primary/30 dark:bg-transparent dark:hover:bg-primary/15" />
           </div>
         </div>
         <ProgresoGlobal etl={etl} />

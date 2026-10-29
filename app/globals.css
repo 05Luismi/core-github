@@ -51,93 +51,93 @@
 }
 
 :root {
-    /* Neutros fríos: hielo y tinta azul petróleo, con acento cian tipo HUD. */
-    --background: oklch(0.975 0.01 215);
-    --foreground: oklch(0.2 0.035 230);
-    --card: oklch(0.995 0.005 210 / 88%);
-    --card-foreground: oklch(0.2 0.035 230);
-    --popover: oklch(0.995 0.005 210);
-    --popover-foreground: oklch(0.2 0.035 230);
-    --primary: oklch(0.66 0.12 200);
-    --primary-foreground: oklch(0.15 0.03 230);
-    --secondary: oklch(0.93 0.025 210);
-    --secondary-foreground: oklch(0.24 0.04 230);
-    --muted: oklch(0.94 0.02 212);
-    --muted-foreground: oklch(0.45 0.05 225);
-    --accent: oklch(0.92 0.04 205);
-    --accent-foreground: oklch(0.24 0.04 230);
+    /* Neutros cálidos con acento naranja HUD; los paneles técnicos son azul marino casi negro. */
+    --background: oklch(0.975 0.008 70);
+    --foreground: oklch(0.19 0.025 250);
+    --card: oklch(0.995 0.004 70 / 88%);
+    --card-foreground: oklch(0.19 0.025 250);
+    --popover: oklch(0.995 0.004 70);
+    --popover-foreground: oklch(0.19 0.025 250);
+    --primary: oklch(0.7 0.18 50);
+    --primary-foreground: oklch(0.15 0.02 250);
+    --secondary: oklch(0.94 0.025 65);
+    --secondary-foreground: oklch(0.22 0.03 250);
+    --muted: oklch(0.95 0.018 68);
+    --muted-foreground: oklch(0.46 0.04 250);
+    --accent: oklch(0.94 0.04 62);
+    --accent-foreground: oklch(0.22 0.03 250);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.86 0.04 210);
-    --input: oklch(0.83 0.05 210);
-    --ring: oklch(0.66 0.12 200);
-    --chart-1: oklch(0.88 0.07 200);
-    --chart-2: oklch(0.78 0.11 200);
-    --chart-3: oklch(0.66 0.12 205);
-    --chart-4: oklch(0.52 0.1 215);
-    --chart-5: oklch(0.4 0.08 225);
+    --border: oklch(0.89 0.03 62);
+    --input: oklch(0.86 0.04 60);
+    --ring: oklch(0.7 0.18 50);
+    --chart-1: oklch(0.86 0.09 62);
+    --chart-2: oklch(0.77 0.14 55);
+    --chart-3: oklch(0.69 0.18 48);
+    --chart-4: oklch(0.56 0.16 42);
+    --chart-5: oklch(0.43 0.12 38);
     --radius: 0.625rem;
-    --sidebar: oklch(0.985 0.008 210);
-    --sidebar-foreground: oklch(0.2 0.035 230);
-    --sidebar-primary: oklch(0.66 0.12 200);
-    --sidebar-primary-foreground: oklch(0.15 0.03 230);
-    --sidebar-accent: oklch(0.94 0.02 212);
-    --sidebar-accent-foreground: oklch(0.24 0.04 230);
-    --sidebar-border: oklch(0.86 0.04 210);
-    --sidebar-ring: oklch(0.66 0.12 200);
-    /* Cian oscuro para texto sobre fondos claros (contraste AA). */
-    --primary-strong: oklch(0.47 0.09 215);
+    --sidebar: oklch(0.985 0.008 70);
+    --sidebar-foreground: oklch(0.19 0.025 250);
+    --sidebar-primary: oklch(0.7 0.18 50);
+    --sidebar-primary-foreground: oklch(0.15 0.02 250);
+    --sidebar-accent: oklch(0.95 0.018 68);
+    --sidebar-accent-foreground: oklch(0.22 0.03 250);
+    --sidebar-border: oklch(0.89 0.03 62);
+    --sidebar-ring: oklch(0.7 0.18 50);
+    /* Naranja oscuro para texto sobre fondos claros (contraste AA). */
+    --primary-strong: oklch(0.52 0.15 42);
     /* Paneles HUD: siempre oscuros, en ambos temas. */
-    --panel: oklch(0.17 0.035 230);
-    --panel-foreground: oklch(0.95 0.03 195);
-    /* Sombras teñidas de cian. */
-    --sombra-color: oklch(0.66 0.12 200 / 24%);
-    --sombra-negra: oklch(0.2 0.04 230 / 9%);
+    --panel: oklch(0.17 0.03 250);
+    --panel-foreground: oklch(0.95 0.02 70);
+    /* Sombras teñidas de naranja. */
+    --sombra-color: oklch(0.7 0.18 50 / 22%);
+    --sombra-negra: oklch(0.2 0.03 250 / 9%);
     /* Fondo HUD: rejilla y red de nodos. */
-    --hud-rejilla: oklch(0.6 0.08 210 / 11%);
-    --hud-linea: oklch(0.55 0.1 205 / 30%);
-    --hud-nodo: oklch(0.55 0.12 200);
+    --hud-rejilla: oklch(0.55 0.1 55 / 9%);
+    --hud-linea: oklch(0.6 0.15 50 / 28%);
+    --hud-nodo: oklch(0.62 0.17 48);
 }
 
 .dark {
-    --background: oklch(0.14 0.03 232);
-    --foreground: oklch(0.95 0.02 200);
-    --card: oklch(0.19 0.04 228 / 80%);
-    --card-foreground: oklch(0.95 0.02 200);
-    --popover: oklch(0.2 0.04 228);
-    --popover-foreground: oklch(0.95 0.02 200);
-    --primary: oklch(0.8 0.13 195);
-    --primary-foreground: oklch(0.15 0.03 232);
-    --secondary: oklch(0.25 0.04 228);
-    --secondary-foreground: oklch(0.95 0.02 200);
-    --muted: oklch(0.23 0.04 228);
-    --muted-foreground: oklch(0.74 0.05 205);
-    --accent: oklch(0.28 0.06 215);
-    --accent-foreground: oklch(0.95 0.02 200);
+    --background: oklch(0.13 0.025 250);
+    --foreground: oklch(0.95 0.015 70);
+    --card: oklch(0.17 0.03 248 / 80%);
+    --card-foreground: oklch(0.95 0.015 70);
+    --popover: oklch(0.18 0.03 248);
+    --popover-foreground: oklch(0.95 0.015 70);
+    --primary: oklch(0.76 0.17 58);
+    --primary-foreground: oklch(0.15 0.025 250);
+    --secondary: oklch(0.24 0.035 248);
+    --secondary-foreground: oklch(0.95 0.015 70);
+    --muted: oklch(0.22 0.03 248);
+    --muted-foreground: oklch(0.73 0.035 245);
+    --accent: oklch(0.28 0.06 55);
+    --accent-foreground: oklch(0.95 0.015 70);
     --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(0.8 0.12 195 / 16%);
-    --input: oklch(0.8 0.12 195 / 22%);
-    --ring: oklch(0.8 0.13 195);
-    --chart-1: oklch(0.9 0.07 195);
-    --chart-2: oklch(0.8 0.12 195);
-    --chart-3: oklch(0.68 0.12 205);
-    --chart-4: oklch(0.54 0.1 215);
-    --chart-5: oklch(0.42 0.08 225);
-    --sidebar: oklch(0.19 0.04 228);
-    --sidebar-foreground: oklch(0.95 0.02 200);
-    --sidebar-primary: oklch(0.8 0.13 195);
-    --sidebar-primary-foreground: oklch(0.15 0.03 232);
-    --sidebar-accent: oklch(0.25 0.04 228);
-    --sidebar-accent-foreground: oklch(0.95 0.02 200);
-    --sidebar-border: oklch(0.8 0.12 195 / 16%);
-    --sidebar-ring: oklch(0.8 0.13 195);
-    --primary-strong: oklch(0.86 0.11 190);
-    --panel: oklch(0.12 0.03 232);
-    --panel-foreground: oklch(0.95 0.03 195);
-    --sombra-color: oklch(0.8 0.13 195 / 20%);
+    --border: oklch(0.78 0.14 60 / 16%);
+    --input: oklch(0.78 0.14 60 / 22%);
+    --ring: oklch(0.76 0.17 58);
+    --chart-1: oklch(0.88 0.09 65);
+    --chart-2: oklch(0.79 0.15 60);
+    --chart-3: oklch(0.7 0.18 52);
+    --chart-4: oklch(0.57 0.16 45);
+    --chart-5: oklch(0.44 0.12 40);
+    --sidebar: oklch(0.17 0.03 248);
+    --sidebar-foreground: oklch(0.95 0.015 70);
+    --sidebar-primary: oklch(0.76 0.17 58);
+    --sidebar-primary-foreground: oklch(0.15 0.025 250);
+    --sidebar-accent: oklch(0.24 0.035 248);
+    --sidebar-accent-foreground: oklch(0.95 0.015 70);
+    --sidebar-border: oklch(0.78 0.14 60 / 16%);
+    --sidebar-ring: oklch(0.76 0.17 58);
+    --primary-strong: oklch(0.83 0.14 65);
+    --panel: oklch(0.11 0.022 250);
+    --panel-foreground: oklch(0.95 0.015 70);
+    --sombra-color: oklch(0.76 0.17 58 / 20%);
     --sombra-negra: oklch(0 0 0 / 45%);
-    --hud-rejilla: oklch(0.8 0.12 195 / 6%);
-    --hud-linea: oklch(0.8 0.13 195 / 26%);
-    --hud-nodo: oklch(0.85 0.13 195);
+    --hud-rejilla: oklch(0.78 0.14 60 / 6%);
+    --hud-linea: oklch(0.76 0.17 58 / 26%);
+    --hud-nodo: oklch(0.82 0.15 62);
 }
 
 @layer base {
@@ -153,32 +153,32 @@
 }
 /* Gráficas y mapa: tokens propios, con pasos seleccionados para cada modo (validados contra su superficie). */
 :root {
-    --viz-surface: #f6fbfd;
-    --viz-ink: #0b1a22;
-    --viz-ink-2: #23485a;
-    --viz-muted: #4d7183;
-    --viz-grid: #dcecf2;
-    --viz-axis: #b5d3de;
-    --viz-sin-datos: #c3d8e0;
+    --viz-surface: #fffaf5;
+    --viz-ink: #141b26;
+    --viz-ink-2: #3c4a5c;
+    --viz-muted: #6b7686;
+    --viz-grid: #f0e4d8;
+    --viz-axis: #dcc6b0;
+    --viz-sin-datos: #d3c7bb;
     --viz-temperatura: #eb6834;
     --viz-humedad: #2a78d6;
     --viz-precipitacion: #1baf7a;
-    --viz-validos: #0e8fa8;
-    --viz-rechazados: #b4413a;
+    --viz-validos: #e0680f;
+    --viz-rechazados: #b4233f;
 }
 .dark {
-    --viz-surface: #0d1d27;
-    --viz-ink: #e6f6fb;
-    --viz-ink-2: #a9d3e2;
-    --viz-muted: #6d97a8;
-    --viz-grid: #16303d;
-    --viz-axis: #24475a;
-    --viz-sin-datos: #2e4b5a;
-    --viz-temperatura: #d95926;
-    --viz-humedad: #3987e5;
-    --viz-precipitacion: #199e70;
-    --viz-validos: #22c3dc;
-    --viz-rechazados: #e0605a;
+    --viz-surface: #0f1824;
+    --viz-ink: #f3ece4;
+    --viz-ink-2: #d7c3ad;
+    --viz-muted: #8d9bab;
+    --viz-grid: #1b2735;
+    --viz-axis: #2c3c4f;
+    --viz-sin-datos: #3a4a5c;
+    --viz-temperatura: #ff6a3d;
+    --viz-humedad: #3d8ff0;
+    --viz-precipitacion: #22b585;
+    --viz-validos: #ff8a1f;
+    --viz-rechazados: #e8455f;
 }
 
 /* Popups y controles del mapa: cristal translúcido con los colores del tema. */
@@ -450,5 +450,185 @@
 @media (prefers-reduced-motion: reduce) {
     .onda-clic {
         display: none;
+    }
+}
+
+/* ---------- 3D, gráficas HUD y mapa ---------- */
+
+/* Tarjetas que se inclinan en 3D siguiendo al puntero (EfectosHud publica --rx y --ry). */
+.inclinable {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 180ms ease-out, box-shadow 200ms ease;
+}
+
+/* Suelo en perspectiva bajo las gráficas: rejilla que se aleja hacia el horizonte. */
+.suelo-3d {
+    position: absolute;
+    inset-inline: -10%;
+    bottom: 0;
+    height: 70%;
+    pointer-events: none;
+    transform: perspective(380px) rotateX(62deg);
+    transform-origin: bottom;
+    background-image:
+        linear-gradient(color-mix(in oklch, var(--primary) 30%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in oklch, var(--primary) 30%, transparent) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: linear-gradient(to top, black 10%, transparent 95%);
+}
+
+/* Brillo de neón para trazos SVG. */
+.neon {
+    filter: drop-shadow(0 0 3px var(--viz-validos)) drop-shadow(0 0 8px color-mix(in oklch, var(--viz-validos) 60%, transparent));
+}
+
+@keyframes arco {
+    from { stroke-dasharray: 0 100; }
+}
+@keyframes giro {
+    to { transform: rotate(360deg); }
+}
+@keyframes giro-inverso {
+    to { transform: rotate(-360deg); }
+}
+@keyframes radar {
+    from { transform: scale(0.5); opacity: 0.9; }
+    to { transform: scale(2.6); opacity: 0; }
+}
+@keyframes suelo-avance {
+    to { background-position: 0 36px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .arco {
+        animation: arco 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+        animation-delay: var(--retraso, 0ms);
+    }
+    .giro {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: giro 14s linear infinite;
+    }
+    .giro-inverso {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: giro-inverso 22s linear infinite;
+    }
+    .suelo-3d {
+        animation: suelo-avance 2.4s linear infinite;
+    }
+    .radar {
+        animation: radar 2.2s ease-out infinite;
+        animation-delay: var(--retraso, 0ms);
+    }
+}
+
+/* Mapa HUD: imagen de satélite oscurecida y teñida, sin tocar marcadores ni paneles. */
+.mapa-hud[data-estilo="satelite"] .maplibregl-canvas {
+    filter: brightness(0.62) contrast(1.25) saturate(0.35) sepia(0.45) hue-rotate(-12deg);
+}
+.mapa-hud[data-estilo="oscuro"] .maplibregl-canvas {
+    filter: contrast(1.1) saturate(0.6);
+}
+.mapa-hud .maplibregl-ctrl-attrib {
+    background: color-mix(in oklch, var(--panel) 75%, transparent) !important;
+    color: var(--muted-foreground);
+}
+.mapa-hud .maplibregl-ctrl-attrib a {
+    color: var(--muted-foreground);
+}
+.popup-cristal .maplibregl-popup-content {
+    border-left: 2px solid var(--primary);
+}
+
+/* ---------- Tablas y pestañas HUD (Datos y Carga) ---------- */
+[data-slot="table-container"] {
+    border-radius: 0.75rem;
+    background: color-mix(in oklch, var(--card) 85%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--primary) 22%, transparent), 0 10px 30px -18px var(--sombra-color);
+}
+[data-slot="table-header"] {
+    background: color-mix(in oklch, var(--panel) 92%, transparent) !important;
+}
+[data-slot="table-head"] {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary) !important;
+    border-bottom: 1px solid color-mix(in oklch, var(--primary) 45%, transparent);
+}
+[data-slot="table-body"] [data-slot="table-row"] {
+    transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+[data-slot="table-body"] [data-slot="table-row"]:hover {
+    background: color-mix(in oklch, var(--primary) 10%, transparent);
+    box-shadow: inset 3px 0 0 var(--primary);
+}
+[data-slot="table-body"] [data-slot="table-row"][data-state="selected"] {
+    background: color-mix(in oklch, var(--primary) 14%, transparent);
+    box-shadow: inset 3px 0 0 var(--primary);
+}
+[data-slot="tabs-list"] {
+    background: color-mix(in oklch, var(--panel) 90%, transparent) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--primary) 25%, transparent);
+    color: color-mix(in oklch, var(--panel-foreground) 65%, transparent) !important;
+}
+[data-slot="tabs-trigger"] {
+    color: color-mix(in oklch, var(--panel-foreground) 70%, transparent) !important;
+}
+[data-slot="tabs-trigger"]:hover {
+    color: var(--panel-foreground) !important;
+    background: color-mix(in oklch, var(--primary) 12%, transparent);
+}
+[data-slot="tabs-trigger"][data-active] {
+    color: var(--primary-foreground) !important;
+    background: var(--primary) !important;
+    border-color: transparent !important;
+    box-shadow: 0 0 14px color-mix(in oklch, var(--primary) 55%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+    [data-slot="table-body"] [data-slot="table-row"] {
+        animation: entrada 380ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    }
+    [data-slot="table-body"] [data-slot="table-row"]:nth-child(2) { animation-delay: 25ms; }
+    [data-slot="table-body"] [data-slot="table-row"]:nth-child(3) { animation-delay: 50ms; }
+    [data-slot="table-body"] [data-slot="table-row"]:nth-child(4) { animation-delay: 75ms; }
+    [data-slot="table-body"] [data-slot="table-row"]:nth-child(5) { animation-delay: 100ms; }
+    [data-slot="table-body"] [data-slot="table-row"]:nth-child(6) { animation-delay: 125ms; }
+    [data-slot="table-body"] [data-slot="table-row"]:nth-child(7) { animation-delay: 150ms; }
+    [data-slot="table-body"] [data-slot="table-row"]:nth-child(8) { animation-delay: 175ms; }
+    [data-slot="table-body"] [data-slot="table-row"]:nth-child(n+9) { animation-delay: 200ms; }
+    [data-slot="tabs-content"] {
+        animation: vista-derecha 320ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    }
+    [data-slot="tabs-trigger"]:active {
+        transform: scale(0.95);
+    }
+}
+
+/* Paquete de datos que recorre un conector del pipeline. */
+@keyframes paquete {
+    from { left: 0; opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    to { left: calc(100% - 0.5rem); opacity: 0; }
+}
+.paquete {
+    left: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .paquete {
+        animation: paquete 1.4s linear infinite;
+    }
+}
+
+/* Las zonas con desplazamiento horizontal no deben generar una barra vertical por un brillo o un escalado. */
+@layer components {
+    .overflow-x-auto {
+        overflow-y: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in oklch, var(--primary) 45%, transparent) transparent;
     }
 }

@@ -87,7 +87,7 @@ export function PestanaJson({ etl }: { etl: PipelineEtl }) {
               <code>{actual.url}</code>
             </p>
           )}
-          <pre className="max-h-[28rem] overflow-auto rounded-lg border bg-muted/40 p-3 font-mono text-xs leading-relaxed">
+          <pre className="hud-marco max-h-[28rem] overflow-auto rounded-lg border border-primary/25 bg-panel/90 p-3 font-mono text-xs leading-relaxed text-panel-foreground/90 shadow-[inset_0_0_30px] shadow-primary/10">
             {JSON.stringify(actual.json, null, 2)}
           </pre>
         </div>

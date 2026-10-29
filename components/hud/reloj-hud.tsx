@@ -8,7 +8,7 @@ function suscribir(avisar: () => void) {
 }
 
 /** Segundos actuales; null en el servidor para no desajustar la hidratación. */
-function useSegundo() {
+export function useSegundo() {
   return React.useSyncExternalStore(
     suscribir,
     () => Math.floor(Date.now() / 1000),

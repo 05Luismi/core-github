@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { DatabaseIcon, DownloadCloudIcon, FilterIcon, ShuffleIcon, BroomSparklesIcon } from "lucide-react"
 import { cn } from "cn"
 
 import { EstadoFaseBadge } from "@/components/etl/estado-fase"
@@ -120,6 +121,74 @@ export function calcularFases(etl: PipelineEtl): Fase[] {
   ]
 }
 
+const ICONOS_FASE = [DownloadCloudIcon, ShuffleIcon, BroomSparklesIcon, FilterIcon, DatabaseIcon]
+
+const COLOR_ESTADO: Record<EstadoFase, string> = {
+  pendiente: "var(--viz-sin-datos)",
+  en_curso: "var(--primary)",
+  completada: "var(--viz-validos)",
+  error: "var(--viz-rechazados)",
+}
+
+/** Recorrido del pipeline: un nodo circular por fase y paquetes de datos viajando entre las completadas. */
+function FlujoPipeline({ fases, onInspeccionar }: { fases: Fase[]; onInspeccionar: (p: Pestana) => void }) {
+  return (
+    <ol className="hud-marco cristal flex items-start gap-1 overflow-x-auto rounded-xl bg-card p-4 ring-1 ring-primary/20">
+      {fases.map((f, i) => {
+        const Icono = ICONOS_FASE[i]
+        const color = COLOR_ESTADO[f.estado]
+        const lleno = f.estado === "completada" || f.estado === "error"
+        return (
+          <React.Fragment key={f.titulo}>
+            <li className="flex min-w-24 flex-1 flex-col items-center gap-1.5 text-center">
+              <button
+                type="button"
+                onClick={() => onInspeccionar(f.inspeccionar[0].pestana)}
+                title={`${f.titulo}: ${f.inspeccionar[0].texto}`}
+                className={cn(
+                  "group relative flex size-16 items-center justify-center rounded-full transition-transform duration-200 hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-95",
+                  f.estado === "en_curso" && "pulso-hud"
+                )}
+              >
+                <svg viewBox="0 0 64 64" className="absolute inset-0" aria-hidden>
+                  <circle cx="32" cy="32" r="29" fill="none" stroke={color} strokeOpacity={0.35} strokeWidth="1" strokeDasharray="2 4" className="giro" />
+                  <circle
+                    cx="32"
+                    cy="32"
+                    r="24"
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="3"
+                    pathLength={100}
+                    strokeDasharray={lleno ? "100 0" : f.estado === "en_curso" ? "30 70" : "4 6"}
+                    transform="rotate(-90 32 32)"
+                    className={cn(lleno && "arco", f.estado === "en_curso" && "giro")}
+                    style={{ filter: f.estado === "pendiente" ? undefined : `drop-shadow(0 0 4px ${color})` }}
+                  />
+                </svg>
+                <Icono aria-hidden className={cn("size-6 transition-transform group-hover:rotate-12", f.estado === "pendiente" && "parpadeo")} style={{ color: f.estado === "pendiente" ? "var(--primary)" : color }} />
+              </button>
+              <span className="hud-etiqueta text-[10px] text-foreground">{f.titulo}</span>
+              <span className="text-xs text-muted-foreground tabular-nums">{f.salida}</span>
+            </li>
+            {i < fases.length - 1 && (
+              <li aria-hidden className="relative mt-8 h-0.5 min-w-6 flex-1">
+                <span data-activo={f.estado === "completada"} className="conector absolute inset-0" />
+                {f.estado === "completada" && (
+                  <>
+                    <span className="paquete absolute top-1/2 size-2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_8px] shadow-primary" />
+                    <span className="paquete absolute top-1/2 size-1.5 -translate-y-1/2 rounded-full bg-primary/70" style={{ animationDelay: "0.7s" }} />
+                  </>
+                )}
+              </li>
+            )}
+          </React.Fragment>
+        )
+      })}
+    </ol>
+  )
+}
+
 export function VisualizacionPipeline({
   etl,
   onInspeccionar,
@@ -133,13 +202,14 @@ export function VisualizacionPipeline({
       <h2 id="titulo-pipeline" className="sr-only">
         Fases del pipeline ETL
       </h2>
+      <FlujoPipeline fases={fases} onInspeccionar={onInspeccionar} />
       <ol className="grid grid-cols-1 gap-2 lg:grid-cols-[repeat(5,minmax(0,1fr))] lg:gap-0">
         {fases.map((f, i) => (
           <React.Fragment key={f.titulo}>
             <li
               style={{ "--retraso": `${i * 90}ms` } as React.CSSProperties}
               className={cn(
-                "entrada elevable hud-marco foco cristal sombra-suave relative flex flex-col gap-2 rounded-xl bg-card p-3 ring-1 ring-primary/15 lg:mr-5",
+                "entrada inclinable hud-marco foco cristal sombra-suave relative flex flex-col gap-2 rounded-xl bg-card p-3 ring-1 ring-primary/15 lg:mr-5",
                 f.estado === "en_curso" && "pulso-hud escaneo",
                 f.estado === "completada" && "ring-primary/35"
               )}
