@@ -234,7 +234,7 @@ function AvisoSupabase({ etl }: { etl: PipelineEtl }) {
 export function AplicacionEtl() {
   const etl = usePipelineEtl()
   const [vista, cambiarVista] = useVista()
-  const [pestanaDatos, setPestanaDatos] = React.useState<PestanaDatos>("json")
+  const [pestanaDatos, setPestanaDatos] = React.useState<PestanaDatos>("validos")
   const [pestanaCarga, setPestanaCarga] =
     React.useState<PestanaCargaVista>("carga")
   const zonaConfiguracion = React.useRef<HTMLDivElement>(null)
@@ -349,18 +349,6 @@ export function AplicacionEtl() {
               <ListaPestanas<PestanaDatos>
                 pestanas={[
                   {
-                    valor: "json",
-                    texto: "JSON original",
-                    n:
-                      etl.extracciones.filter((e) => e.json !== undefined)
-                        .length || undefined,
-                  },
-                  {
-                    valor: "transformados",
-                    texto: "Transformados",
-                    n: p?.transformados.length,
-                  },
-                  {
                     valor: "validos",
                     texto: "Válidos",
                     n: p?.limpieza.validos.length,
@@ -369,6 +357,18 @@ export function AplicacionEtl() {
                     valor: "rechazados",
                     texto: "Rechazados",
                     n: p?.limpieza.rechazados.length,
+                  },
+                  {
+                    valor: "transformados",
+                    texto: "Transformados",
+                    n: p?.transformados.length,
+                  },
+                  {
+                    valor: "json",
+                    texto: "JSON original",
+                    n:
+                      etl.extracciones.filter((e) => e.json !== undefined)
+                        .length || undefined,
                   },
                 ]}
               />
