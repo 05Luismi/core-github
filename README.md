@@ -94,3 +94,56 @@ INTEGRACION=1 ETL_BASE_URL=http://localhost:3000 npm run test:integracion
 
 Los fixtures (`tests/fixtures`) solo se usan en las pruebas; la aplicación nunca los mezcla con
 extracciones reales.
+
+## Resumen de la entrega
+
+### Lo construido
+
+- **Aplicación Next.js** desplegada en Vercel con cinco apartados: Extracción, Pipeline, Mapa,
+  Datos y Carga. Todos los textos están en castellano y la interfaz se adapta a pantallas pequeñas.
+- **Extracción** desde la API histórica de Open-Meteo para 9 ciudades: varias a la vez, periodo
+  configurable de hasta 31 días, resumen del volumen previsto y reintento por ciudad sin duplicar
+  datos. El JSON original se conserva durante la sesión y se puede descargar.
+- **Pipeline visual** con estado, entrada, salida y duración reales de cada fase:
+  Extracción → Transformación → Limpieza → Filtrado y selección → Carga.
+- **Transformación y limpieza**: los arrays paralelos se convierten en un registro por ciudad y hora
+  en UTC. Los `null` no se convierten en cero, se validan los rangos, se eliminan los duplicados
+  conservando la primera aparición y cada rechazo guarda su motivo.
+- **Filtrado, ordenación y selección** antes de cargar, con contadores separados: extraído,
+  válidos, rechazados, coinciden con los filtros y seleccionados.
+- **Carga en Supabase** desde el servidor: lotes de 500, upsert por `(ciudad, fecha_hora)`, estado
+  por lote, reintento de los lotes fallidos y verificación posterior de las claves.
+- **Consulta del destino** («Datos en Supabase») con paginación, filtros y ordenación.
+- **Visualización**: gráficas de calidad y comparativa por ciudad, evolución diaria y mapa interactivo
+  (MapTiler) con vista de satélite, relieve 3D y globo.
+- **Migración SQL** (`supabase/migrations/`) con la tabla `mediciones_meteorologicas`, las
+  restricciones de humedad y precipitación, la clave única y RLS activado sin políticas públicas.
+
+### Pruebas realizadas
+
+| Verificación pedida | Cómo se comprueba | Resultado |
+| --- | --- | --- |
+| 1. Una ciudad durante un día: 24 registros en UTC | Unitaria (fixture) e integración real con Barcelona | Correcto |
+| 2. Transformación de los arrays | Unitarias: orden, `utc_offset_seconds` y longitudes incoherentes | Correcto |
+| 3. `null` sin convertir en cero | Unitarias de transformación y limpieza | Correcto |
+| 4. Detección de duplicados | Unitaria: se conserva la primera aparición válida | Correcto |
+| 5. Filtros y ordenación antes de paginar | Unitarias de filtros | Correcto |
+| 6. Selección entre varias páginas | Unitarias de selección | Correcto |
+| 7. Vista previa igual a lo enviado | Unitaria: mismo conjunto y mismo orden, lotes de ≤ 500 | Correcto |
+| 8. Segunda carga sin duplicados | Integración real con Supabase | Correcto |
+| 9. Fallo parcial de carga | Unitaria (simulado) e integración real (lote inválido) | Correcto |
+| 10. Build y comprobación de tipos | `npm run build` y `npm run typecheck` | Sin errores |
+
+`npm test` ejecuta 46 pruebas unitarias. Las de integración (7) se omiten por defecto: necesitan
+red, el servidor en marcha y la migración aplicada, y se lanzan con `INTEGRACION=1` (ver
+«Pruebas»). Los fixtures se usan solo en las pruebas y nunca se mezclan con datos reales.
+
+### Bloqueos y pendientes
+
+- **Sin autenticación.** Para poder cargar desde la versión publicada se ha definido
+  `ETL_PERMITIR_ESCRITURA=true` en Vercel, así que cualquiera con el enlace puede escribir en la
+  tabla. Antes de un uso real hay que proteger los endpoints o desactivar esa variable.
+- La clave de MapTiler es pública por diseño. Conviene restringirla en MapTiler a los dominios
+  de la aplicación.
+- El archivo histórico de Open-Meteo publica los datos con algunos días de retraso. La aplicación
+  avisa de ello, pero los días más recientes pueden llegar incompletos.
