@@ -28,7 +28,7 @@ export function Bienvenida({ etl, onConfigurar }: { etl: PipelineEtl; onConfigur
   return (
     <section
       aria-labelledby="titulo-bienvenida"
-      className="entrada sombra-suave flex flex-col gap-5 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent p-5 ring-1 ring-primary/25 sm:p-6"
+      className="entrada sombra-suave hud-marco cristal flex flex-col gap-5 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent p-5 ring-1 ring-primary/25 sm:p-6"
     >
       <div className="flex flex-col gap-1.5">
         <h2 id="titulo-bienvenida" className="text-lg font-semibold">
@@ -43,10 +43,10 @@ export function Bienvenida({ etl, onConfigurar }: { etl: PipelineEtl; onConfigur
         {PASOS.map((p, i) => (
           <li
             key={p.titulo}
-            className="entrada elevable group flex gap-3 rounded-xl bg-card/80 p-3 ring-1 ring-primary/15"
+            className="entrada elevable hud-marco foco cristal group flex gap-3 rounded-xl bg-card/80 p-3 ring-1 ring-primary/15"
             style={{ "--retraso": `${120 + i * 90}ms` } as React.CSSProperties}
           >
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-black text-primary shadow-md shadow-primary/25 transition-transform duration-200 group-hover:scale-110">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-panel text-primary shadow-md shadow-primary/25 transition-transform duration-200 group-hover:scale-110">
               <p.icono aria-hidden className="size-4.5" />
             </span>
             <span className="flex flex-col gap-0.5">

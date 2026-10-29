@@ -30,15 +30,15 @@ export function Contadores({ etl }: { etl: PipelineEtl }) {
             key={i.etiqueta}
             style={{ "--retraso": `${n * 50}ms` } as React.CSSProperties}
             className={cn(
-              "entrada elevable rounded-xl p-3",
+              "entrada elevable hud-marco foco rounded-xl p-3",
               i.destacado
                 ? "bg-primary text-primary-foreground shadow-lg shadow-primary/35"
                 : n === 0
-                  ? "bg-black text-orange-50 shadow-lg shadow-primary/20"
-                  : "sombra-suave bg-card ring-1 ring-primary/15"
+                  ? "bg-panel text-panel-foreground shadow-lg shadow-primary/20"
+                  : "sombra-suave cristal bg-card ring-1 ring-primary/15"
             )}
           >
-            <dt className="text-xs opacity-80">{i.etiqueta}</dt>
+            <dt className="hud-etiqueta opacity-80">{i.etiqueta}</dt>
             <dd className={cn("text-2xl font-semibold tabular-nums", n === 0 && "text-primary")}>
               <Valor valor={i.valor} />
             </dd>

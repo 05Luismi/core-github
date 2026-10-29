@@ -27,7 +27,7 @@ const NOMBRES: Record<Metrica, string> = { temperatura: "Temperatura", humedad: 
 
 function SelectorMetrica({ valor, onCambiar }: { valor: Metrica; onCambiar: (m: Metrica) => void }) {
   return (
-    <div role="radiogroup" aria-label="Métrica de las gráficas" className="flex rounded-xl bg-black p-1 shadow-md shadow-primary/15">
+    <div role="radiogroup" aria-label="Métrica de las gráficas" className="flex rounded-xl bg-panel p-1 shadow-md shadow-primary/15">
       {(Object.keys(METRICAS) as Metrica[]).map((m) => {
         const Icono = ICONOS[m]
         const activa = m === valor
@@ -40,7 +40,7 @@ function SelectorMetrica({ valor, onCambiar }: { valor: Metrica; onCambiar: (m: 
             onClick={() => onCambiar(m)}
             className={cn(
               "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none",
-              activa ? "bg-primary text-primary-foreground shadow-md shadow-primary/40" : "text-orange-100/70 hover:bg-primary/15 hover:text-orange-50"
+              activa ? "bg-primary text-primary-foreground shadow-md shadow-primary/40" : "text-panel-foreground/70 hover:bg-primary/15 hover:text-panel-foreground"
             )}
           >
             <Icono aria-hidden className="size-3.5" />
@@ -98,7 +98,7 @@ function Globo({ children }: { children: React.ReactNode }) {
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute right-2 bottom-full z-20 mb-1 hidden min-w-40 flex-col gap-0.5 rounded-lg bg-black px-2.5 py-1.5 text-xs text-orange-50 shadow-lg shadow-primary/25 group-hover:flex group-focus-visible:flex"
+      className="pointer-events-none absolute right-2 bottom-full z-20 mb-1 hidden min-w-40 flex-col gap-0.5 rounded-lg bg-panel px-2.5 py-1.5 text-xs text-panel-foreground shadow-lg shadow-primary/25 group-hover:flex group-focus-visible:flex"
     >
       {children}
     </span>
@@ -108,7 +108,7 @@ function Globo({ children }: { children: React.ReactNode }) {
 function FilaGlobo({ color, texto, valor }: { color?: string; texto: string; valor: string }) {
   return (
     <span className="flex items-center justify-between gap-3 tabular-nums">
-      <span className="flex items-center gap-1.5 text-orange-100/70">
+      <span className="flex items-center gap-1.5 text-panel-foreground/70">
         {color && <span className="inline-block size-2 rounded-full" style={{ background: color }} />}
         {texto}
       </span>
@@ -398,7 +398,7 @@ function EvolucionDiaria({ dias, metrica }: { dias: ResumenDia[]; metrica: Metri
       {d && sel !== null && (
         <div
           role="status"
-          className="pointer-events-none absolute top-0 z-10 rounded-lg bg-black px-2.5 py-1.5 text-xs text-orange-50 shadow-lg shadow-primary/25"
+          className="pointer-events-none absolute top-0 z-10 rounded-lg bg-panel px-2.5 py-1.5 text-xs text-panel-foreground shadow-lg shadow-primary/25"
           style={cx(sel) > ancho / 2 ? { right: ancho - cx(sel) + paso / 2 + 6 } : { left: cx(sel) + paso / 2 + 6 }}
         >
           <p className="font-semibold">

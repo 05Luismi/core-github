@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google"
 
 import "./globals.css"
+import { EfectosHud } from "@/components/hud/efectos-hud"
+import { FondoHud } from "@/components/hud/fondo-hud"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from "@/lib/utils";
@@ -25,6 +27,8 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
+          <FondoHud />
+          <EfectosHud />
           <Toaster>{children}</Toaster>
         </ThemeProvider>
       </body>

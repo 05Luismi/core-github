@@ -17,6 +17,7 @@ import { cn } from "cn"
 
 import { BotonTema } from "@/components/boton-tema"
 import { ProgresoGlobal } from "@/components/etl/progreso-global"
+import { RelojHud } from "@/components/hud/reloj-hud"
 import type { PipelineEtl } from "@/hooks/use-pipeline-etl"
 import { formatearEntero } from "@/lib/etl/formato"
 
@@ -59,7 +60,7 @@ function EstadoSupabase({ etl }: { etl: PipelineEtl }) {
       title={s && !ok ? (s.mensaje ?? undefined) : "Tabla mediciones_meteorologicas"}
       className={cn(
         "hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs sm:flex",
-        s && !ok ? "border-red-400/40 bg-red-500/15 text-red-300" : "border-primary/25 text-orange-100/80"
+        s && !ok ? "border-red-400/40 bg-red-500/15 text-red-300" : "border-primary/25 text-panel-foreground/80"
       )}
     >
       {!s ? (
@@ -71,7 +72,7 @@ function EstadoSupabase({ etl }: { etl: PipelineEtl }) {
         <>
           <span aria-hidden className="size-2 rounded-full bg-emerald-400" />
           Supabase
-          {typeof s.filas === "number" && <span className="tabular-nums text-orange-100/55">· {formatearEntero(s.filas)} filas</span>}
+          {typeof s.filas === "number" && <span className="tabular-nums text-panel-foreground/55">· {formatearEntero(s.filas)} filas</span>}
         </>
       ) : (
         <>
@@ -106,8 +107,22 @@ export function MenuSuperior({
   }, [])
 
   return (
-    <header ref={ref} className="sticky top-0 z-40 border-b border-primary/25 bg-black text-orange-50 shadow-lg shadow-primary/10">
+    <header ref={ref} className="sticky top-0 z-40 border-b border-primary/30 bg-panel/85 text-panel-foreground shadow-lg shadow-primary/10 backdrop-blur-md">
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" />
       <div className="mx-auto flex w-full max-w-[1600px] flex-col px-4 sm:px-6">
+        <div className="hidden items-center gap-4 border-b border-primary/15 py-1 text-panel-foreground/55 sm:flex">
+          <span className="hud-etiqueta flex items-center gap-1.5">
+            <span aria-hidden className="parpadeo size-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px] shadow-emerald-400" />
+            Sistema en línea
+          </span>
+          <span className="hud-etiqueta tabular-nums">
+            Paso {String(VISTAS.findIndex((v) => v.id === vista) + 1).padStart(2, "0")}/{String(VISTAS.length).padStart(2, "0")}
+          </span>
+          <span className="hud-etiqueta hidden lg:inline">Atajos: 1–5 · ← → · D</span>
+          <span className="ml-auto flex items-center gap-4">
+            <RelojHud />
+          </span>
+        </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5">
           <a
             href="#extraccion"
@@ -117,12 +132,12 @@ export function MenuSuperior({
             }}
             className="flex min-w-0 items-center gap-2.5 rounded-lg focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
           >
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/40">
+            <span className="pulso-hud flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/40">
               <CloudSunIcon aria-hidden className="size-5" />
             </span>
             <span className="flex min-w-0 flex-col leading-tight">
-              <span className="truncate text-sm font-semibold">Pipeline ETL</span>
-              <span className="truncate text-xs text-orange-100/55">Open-Meteo → Supabase</span>
+              <span className="truncate text-sm font-semibold tracking-wide">Pipeline ETL</span>
+              <span className="hud-etiqueta truncate text-panel-foreground/55">Open-Meteo → Supabase</span>
             </span>
           </a>
 
@@ -141,13 +156,18 @@ export function MenuSuperior({
                         onCambiar(v.id)
                       }}
                       className={cn(
-                        "relative flex h-9 items-center gap-2 rounded-lg px-3 text-sm whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none",
-                        activa ? "bg-primary/15 font-medium text-orange-50" : "text-orange-100/60 hover:bg-primary/10 hover:text-orange-50",
-                        "after:absolute after:inset-x-3 after:-bottom-[7px] after:h-0.5 after:rounded-full after:bg-primary after:transition-opacity",
-                        activa ? "after:opacity-100" : "after:opacity-0"
+                        "relative flex h-9 items-center gap-2 rounded-lg px-3 text-sm whitespace-nowrap transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none active:scale-95",
+                        activa
+                          ? "bg-primary/15 font-medium text-panel-foreground shadow-[inset_0_0_12px] shadow-primary/25 ring-1 ring-primary/40"
+                          : "text-panel-foreground/60 hover:bg-primary/10 hover:text-panel-foreground",
+                        "after:absolute after:inset-x-3 after:-bottom-[7px] after:h-0.5 after:rounded-full after:bg-primary after:shadow-[0_0_8px] after:shadow-primary after:transition-all after:duration-300",
+                        activa ? "after:opacity-100" : "after:scale-x-0 after:opacity-0"
                       )}
                     >
-                      <v.icono aria-hidden className={cn("size-4", activa && "text-primary")} />
+                      <span aria-hidden className="hud-etiqueta hidden text-primary/70 lg:inline">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <v.icono aria-hidden className={cn("size-4 transition-transform duration-200", activa && "scale-110 text-primary")} />
                       <span>
                         <span className="sr-only">{i + 1}. </span>
                         {v.texto}
@@ -156,7 +176,7 @@ export function MenuSuperior({
                         <span
                           className={cn(
                             "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] tabular-nums",
-                            activa ? "bg-primary text-primary-foreground" : "bg-primary/15 text-orange-100/80"
+                            activa ? "bg-primary text-primary-foreground" : "bg-primary/15 text-panel-foreground/80"
                           )}
                         >
                           {extra}
@@ -171,7 +191,7 @@ export function MenuSuperior({
 
           <div className="ml-auto flex items-center gap-2">
             <EstadoSupabase etl={etl} />
-            <BotonTema className="border-primary/30 bg-transparent text-orange-50 hover:bg-primary/15 hover:text-orange-50 dark:border-primary/30 dark:bg-transparent dark:hover:bg-primary/15" />
+            <BotonTema className="border-primary/30 bg-transparent text-panel-foreground hover:bg-primary/15 hover:text-panel-foreground dark:border-primary/30 dark:bg-transparent dark:hover:bg-primary/15" />
           </div>
         </div>
         <ProgresoGlobal etl={etl} />

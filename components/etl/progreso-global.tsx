@@ -36,7 +36,7 @@ export function ProgresoGlobal({ etl }: { etl: PipelineEtl }) {
   const valor = Math.round(p.valor)
   return (
     <div className="flex flex-col gap-1.5 pb-2.5" aria-live="polite">
-      <div className="flex justify-between gap-3 text-xs text-orange-100/80">
+      <div className="flex justify-between gap-3 text-xs text-panel-foreground/80">
         <span className="truncate">{p.texto}</span>
         <span className="tabular-nums">{valor} %</span>
       </div>

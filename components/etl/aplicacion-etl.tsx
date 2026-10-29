@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { ArrowLeftIcon, ArrowRightIcon, CircleAlertIcon } from "lucide-react"
+import { cn } from "cn"
 
 import { Bienvenida } from "@/components/etl/bienvenida"
 import { ConfiguracionExtraccion } from "@/components/etl/configuracion-extraccion"
@@ -76,23 +77,110 @@ function ListaPestanas<T extends string>({
   )
 }
 
-function CabeceraVista({ vista }: { vista: Vista }) {
+function CabeceraVista({
+  vista,
+  onCambiar,
+}: {
+  vista: Vista
+  onCambiar: (v: Vista) => void
+}) {
   const i = IDS_VISTAS.indexOf(vista)
   const v = VISTAS[i]
   return (
-    <div className="flex items-start gap-3">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-black text-primary shadow-md shadow-primary/25">
-        <v.icono aria-hidden className="size-5" />
-      </span>
-      <div className="flex flex-col gap-0.5">
-        <p className="text-xs font-medium tracking-wide text-primary-strong uppercase">
-          Paso {i + 1} de {VISTAS.length}
-        </p>
-        <h1 className="text-xl font-semibold">{v.texto}</h1>
-        <p className="text-sm text-muted-foreground">{v.descripcion}</p>
+    <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex items-start gap-3">
+        <span className="hud-marco pulso-hud flex size-11 shrink-0 items-center justify-center rounded-xl bg-panel text-primary shadow-md shadow-primary/25">
+          <v.icono aria-hidden className="size-5" />
+        </span>
+        <div className="flex flex-col gap-0.5">
+          <p className="hud-etiqueta text-primary-strong">
+            Paso {String(i + 1).padStart(2, "0")} / {String(VISTAS.length).padStart(2, "0")}
+          </p>
+          <h1 className="brillo-texto text-xl font-semibold tracking-wide">{v.texto}</h1>
+          <p className="text-sm text-muted-foreground">{v.descripcion}</p>
+        </div>
       </div>
+      {/* Barra de pasos: cada segmento lleva a su apartado. */}
+      <ol aria-label="Progreso por los apartados" className="flex w-full gap-1.5 sm:w-auto">
+        {VISTAS.map((p, n) => (
+          <li key={p.id} className="flex-1 sm:flex-none">
+            <button
+              type="button"
+              onClick={() => onCambiar(p.id)}
+              aria-current={n === i ? "step" : undefined}
+              title={`${n + 1}. ${p.texto}`}
+              className="group flex w-full flex-col gap-1 rounded-md py-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-14"
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-full rounded-full transition-all duration-300 group-hover:bg-primary/70",
+                  n < i ? "bg-primary/60" : n === i ? "bg-primary shadow-[0_0_10px] shadow-primary" : "bg-primary/15"
+                )}
+              />
+              <span className={cn("hud-etiqueta text-left", n === i ? "text-primary-strong" : "text-muted-foreground")}>
+                {String(n + 1).padStart(2, "0")}
+                <span className="sr-only"> {p.texto}</span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
     </div>
   )
+}
+
+function esZonaDeEscritura(objetivo: EventTarget | null) {
+  return (
+    objetivo instanceof HTMLElement &&
+    (objetivo.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(objetivo.tagName))
+  )
+}
+
+/** Atajos: 1–5 saltan a un apartado; ← y → avanzan o retroceden cuando no hay nada enfocado. */
+function useAtajosVistas(vista: Vista, cambiar: (v: Vista) => void) {
+  React.useEffect(() => {
+    const alPulsar = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return
+      if (esZonaDeEscritura(e.target)) return
+      const i = IDS_VISTAS.indexOf(vista)
+      const n = Number(e.key)
+      if (Number.isInteger(n) && n >= 1 && n <= VISTAS.length) {
+        cambiar(VISTAS[n - 1].id)
+        return
+      }
+      const libre = !document.activeElement || document.activeElement === document.body
+      if (!libre) return
+      if (e.key === "ArrowRight" && VISTAS[i + 1]) cambiar(VISTAS[i + 1].id)
+      if (e.key === "ArrowLeft" && VISTAS[i - 1]) cambiar(VISTAS[i - 1].id)
+    }
+    window.addEventListener("keydown", alPulsar)
+    return () => window.removeEventListener("keydown", alPulsar)
+  }, [vista, cambiar])
+}
+
+const UMBRAL_GESTO = 70
+
+/** Deslizar horizontalmente con el dedo cambia de apartado (fuera de tablas, gráficas y campos). */
+function useGestoDeslizar(vista: Vista, cambiar: (v: Vista) => void) {
+  const inicio = React.useRef<{ x: number; y: number } | null>(null)
+  return {
+    onTouchStart: (e: React.TouchEvent) => {
+      const t = e.target instanceof Element ? e.target : null
+      const bloqueado = t?.closest("input, textarea, select, table, svg, [data-sin-gesto], .overflow-x-auto")
+      inicio.current = bloqueado || e.touches.length !== 1 ? null : { x: e.touches[0].clientX, y: e.touches[0].clientY }
+    },
+    onTouchEnd: (e: React.TouchEvent) => {
+      const a = inicio.current
+      inicio.current = null
+      if (!a) return
+      const dx = e.changedTouches[0].clientX - a.x
+      const dy = e.changedTouches[0].clientY - a.y
+      if (Math.abs(dx) < UMBRAL_GESTO || Math.abs(dy) > Math.abs(dx) * 0.6) return
+      const i = IDS_VISTAS.indexOf(vista)
+      const destino = VISTAS[dx < 0 ? i + 1 : i - 1]
+      if (destino) cambiar(destino.id)
+    },
+  }
 }
 
 /** Botones anterior/siguiente al final de cada apartado. */
@@ -151,6 +239,16 @@ export function AplicacionEtl() {
     React.useState<PestanaCargaVista>("carga")
   const zonaConfiguracion = React.useRef<HTMLDivElement>(null)
   const p = etl.procesado
+  useAtajosVistas(vista, cambiarVista)
+  const gesto = useGestoDeslizar(vista, cambiarVista)
+
+  // La transición entra por la derecha al avanzar y por la izquierda al retroceder.
+  const [vistaPrevia, setVistaPrevia] = React.useState(vista)
+  const [transicion, setTransicion] = React.useState("vista-derecha")
+  if (vistaPrevia !== vista) {
+    setVistaPrevia(vista)
+    setTransicion(IDS_VISTAS.indexOf(vista) >= IDS_VISTAS.indexOf(vistaPrevia) ? "vista-derecha" : "vista-izquierda")
+  }
 
   const inspeccionar = (destino: Pestana) => {
     if (destino === "carga" || destino === "supabase") {
@@ -176,16 +274,20 @@ export function AplicacionEtl() {
     <>
       <MenuSuperior etl={etl} vista={vista} onCambiar={cambiarVista} />
       {vista === "mapa" ? (
-        <main>
+        <main className={transicion}>
           <MapaCiudades
             etl={etl}
             onIrAExtraccion={() => cambiarVista("extraccion")}
           />
         </main>
       ) : (
-        <main className="mx-auto flex w-full max-w-[1600px] flex-col gap-6 px-4 py-6 sm:px-6">
+        <main
+          key={vista}
+          {...gesto}
+          className={cn("mx-auto flex w-full max-w-[1600px] flex-col gap-6 px-4 py-6 sm:px-6", transicion)}
+        >
           <AvisoSupabase etl={etl} />
-          <CabeceraVista vista={vista} />
+          <CabeceraVista vista={vista} onCambiar={cambiarVista} />
 
           {vista === "extraccion" && (
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-[24rem_minmax(0,1fr)]">
@@ -206,9 +308,9 @@ export function AplicacionEtl() {
                           type="button"
                           onClick={() => cambiarVista(v.id)}
                           style={{ "--retraso": `${i * 60}ms` } as React.CSSProperties}
-                          className="entrada elevable sombra-suave group flex items-start gap-3 rounded-xl bg-card p-4 text-left ring-1 ring-primary/15 hover:ring-primary/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                          className="entrada elevable sombra-suave hud-marco foco cristal group flex items-start gap-3 rounded-xl bg-card p-4 text-left ring-1 ring-primary/15 hover:ring-primary/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-[0.98]"
                         >
-                          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-black text-primary shadow-md shadow-primary/25 transition-transform duration-200 group-hover:scale-110">
+                          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-panel text-primary shadow-md shadow-primary/25 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6">
                             <v.icono aria-hidden className="size-4.5" />
                           </span>
                           <span className="flex min-w-0 flex-1 flex-col gap-0.5">

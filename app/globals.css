@@ -33,6 +33,8 @@
     --color-primary-foreground: var(--primary-foreground);
     --color-primary: var(--primary);
     --color-primary-strong: var(--primary-strong);
+    --color-panel: var(--panel);
+    --color-panel-foreground: var(--panel-foreground);
     --color-popover-foreground: var(--popover-foreground);
     --color-popover: var(--popover);
     --color-card-foreground: var(--card-foreground);
@@ -49,81 +51,93 @@
 }
 
 :root {
-    /* Neutros cálidos: crema y tinta casi negra con un toque naranja, sin grises. */
-    --background: oklch(0.978 0.012 70);
-    --foreground: oklch(0.17 0.015 45);
-    --card: oklch(0.995 0.005 70);
-    --card-foreground: oklch(0.17 0.015 45);
-    --popover: oklch(0.995 0.005 70);
-    --popover-foreground: oklch(0.17 0.015 45);
-    --primary: oklch(0.7 0.19 48);
-    --primary-foreground: oklch(0.15 0.01 45);
-    --secondary: oklch(0.94 0.03 65);
-    --secondary-foreground: oklch(0.22 0.03 45);
-    --muted: oklch(0.95 0.022 68);
-    --muted-foreground: oklch(0.47 0.06 45);
-    --accent: oklch(0.94 0.045 62);
-    --accent-foreground: oklch(0.22 0.03 45);
+    /* Neutros fríos: hielo y tinta azul petróleo, con acento cian tipo HUD. */
+    --background: oklch(0.975 0.01 215);
+    --foreground: oklch(0.2 0.035 230);
+    --card: oklch(0.995 0.005 210 / 88%);
+    --card-foreground: oklch(0.2 0.035 230);
+    --popover: oklch(0.995 0.005 210);
+    --popover-foreground: oklch(0.2 0.035 230);
+    --primary: oklch(0.66 0.12 200);
+    --primary-foreground: oklch(0.15 0.03 230);
+    --secondary: oklch(0.93 0.025 210);
+    --secondary-foreground: oklch(0.24 0.04 230);
+    --muted: oklch(0.94 0.02 212);
+    --muted-foreground: oklch(0.45 0.05 225);
+    --accent: oklch(0.92 0.04 205);
+    --accent-foreground: oklch(0.24 0.04 230);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.9 0.035 62);
-    --input: oklch(0.87 0.045 60);
-    --ring: oklch(0.7 0.19 48);
-    --chart-1: oklch(0.85 0.09 60);
-    --chart-2: oklch(0.75 0.15 52);
-    --chart-3: oklch(0.68 0.18 46);
-    --chart-4: oklch(0.55 0.16 40);
-    --chart-5: oklch(0.42 0.12 38);
+    --border: oklch(0.86 0.04 210);
+    --input: oklch(0.83 0.05 210);
+    --ring: oklch(0.66 0.12 200);
+    --chart-1: oklch(0.88 0.07 200);
+    --chart-2: oklch(0.78 0.11 200);
+    --chart-3: oklch(0.66 0.12 205);
+    --chart-4: oklch(0.52 0.1 215);
+    --chart-5: oklch(0.4 0.08 225);
     --radius: 0.625rem;
-    --sidebar: oklch(0.985 0.01 70);
-    --sidebar-foreground: oklch(0.17 0.015 45);
-    --sidebar-primary: oklch(0.7 0.19 48);
-    --sidebar-primary-foreground: oklch(0.15 0.01 45);
-    --sidebar-accent: oklch(0.95 0.022 68);
-    --sidebar-accent-foreground: oklch(0.22 0.03 45);
-    --sidebar-border: oklch(0.9 0.035 62);
-    --sidebar-ring: oklch(0.7 0.19 48);
-    /* Naranja oscuro para texto sobre fondos claros (contraste AA). */
-    --primary-strong: oklch(0.55 0.17 42);
-    /* Sombras teñidas de naranja. */
-    --sombra-color: oklch(0.7 0.19 48 / 22%);
-    --sombra-negra: oklch(0.2 0.03 45 / 8%);
+    --sidebar: oklch(0.985 0.008 210);
+    --sidebar-foreground: oklch(0.2 0.035 230);
+    --sidebar-primary: oklch(0.66 0.12 200);
+    --sidebar-primary-foreground: oklch(0.15 0.03 230);
+    --sidebar-accent: oklch(0.94 0.02 212);
+    --sidebar-accent-foreground: oklch(0.24 0.04 230);
+    --sidebar-border: oklch(0.86 0.04 210);
+    --sidebar-ring: oklch(0.66 0.12 200);
+    /* Cian oscuro para texto sobre fondos claros (contraste AA). */
+    --primary-strong: oklch(0.47 0.09 215);
+    /* Paneles HUD: siempre oscuros, en ambos temas. */
+    --panel: oklch(0.17 0.035 230);
+    --panel-foreground: oklch(0.95 0.03 195);
+    /* Sombras teñidas de cian. */
+    --sombra-color: oklch(0.66 0.12 200 / 24%);
+    --sombra-negra: oklch(0.2 0.04 230 / 9%);
+    /* Fondo HUD: rejilla y red de nodos. */
+    --hud-rejilla: oklch(0.6 0.08 210 / 11%);
+    --hud-linea: oklch(0.55 0.1 205 / 30%);
+    --hud-nodo: oklch(0.55 0.12 200);
 }
 
 .dark {
-    --background: oklch(0.13 0.012 45);
-    --foreground: oklch(0.96 0.015 70);
-    --card: oklch(0.18 0.018 45);
-    --card-foreground: oklch(0.96 0.015 70);
-    --popover: oklch(0.2 0.02 45);
-    --popover-foreground: oklch(0.96 0.015 70);
-    --primary: oklch(0.73 0.18 52);
-    --primary-foreground: oklch(0.13 0.012 45);
-    --secondary: oklch(0.25 0.03 45);
-    --secondary-foreground: oklch(0.96 0.015 70);
-    --muted: oklch(0.24 0.028 45);
-    --muted-foreground: oklch(0.76 0.05 62);
-    --accent: oklch(0.28 0.05 50);
-    --accent-foreground: oklch(0.96 0.015 70);
+    --background: oklch(0.14 0.03 232);
+    --foreground: oklch(0.95 0.02 200);
+    --card: oklch(0.19 0.04 228 / 80%);
+    --card-foreground: oklch(0.95 0.02 200);
+    --popover: oklch(0.2 0.04 228);
+    --popover-foreground: oklch(0.95 0.02 200);
+    --primary: oklch(0.8 0.13 195);
+    --primary-foreground: oklch(0.15 0.03 232);
+    --secondary: oklch(0.25 0.04 228);
+    --secondary-foreground: oklch(0.95 0.02 200);
+    --muted: oklch(0.23 0.04 228);
+    --muted-foreground: oklch(0.74 0.05 205);
+    --accent: oklch(0.28 0.06 215);
+    --accent-foreground: oklch(0.95 0.02 200);
     --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(0.75 0.12 55 / 14%);
-    --input: oklch(0.75 0.12 55 / 20%);
-    --ring: oklch(0.73 0.18 52);
-    --chart-1: oklch(0.85 0.09 60);
-    --chart-2: oklch(0.75 0.15 52);
-    --chart-3: oklch(0.68 0.18 46);
-    --chart-4: oklch(0.55 0.16 40);
-    --chart-5: oklch(0.42 0.12 38);
-    --sidebar: oklch(0.18 0.018 45);
-    --sidebar-foreground: oklch(0.96 0.015 70);
-    --sidebar-primary: oklch(0.73 0.18 52);
-    --sidebar-primary-foreground: oklch(0.13 0.012 45);
-    --sidebar-accent: oklch(0.25 0.03 45);
-    --sidebar-accent-foreground: oklch(0.96 0.015 70);
-    --sidebar-border: oklch(0.75 0.12 55 / 14%);
-    --sidebar-ring: oklch(0.73 0.18 52);
-    --primary-strong: oklch(0.8 0.15 60);
-    --sombra-color: oklch(0.73 0.18 52 / 18%);
+    --border: oklch(0.8 0.12 195 / 16%);
+    --input: oklch(0.8 0.12 195 / 22%);
+    --ring: oklch(0.8 0.13 195);
+    --chart-1: oklch(0.9 0.07 195);
+    --chart-2: oklch(0.8 0.12 195);
+    --chart-3: oklch(0.68 0.12 205);
+    --chart-4: oklch(0.54 0.1 215);
+    --chart-5: oklch(0.42 0.08 225);
+    --sidebar: oklch(0.19 0.04 228);
+    --sidebar-foreground: oklch(0.95 0.02 200);
+    --sidebar-primary: oklch(0.8 0.13 195);
+    --sidebar-primary-foreground: oklch(0.15 0.03 232);
+    --sidebar-accent: oklch(0.25 0.04 228);
+    --sidebar-accent-foreground: oklch(0.95 0.02 200);
+    --sidebar-border: oklch(0.8 0.12 195 / 16%);
+    --sidebar-ring: oklch(0.8 0.13 195);
+    --primary-strong: oklch(0.86 0.11 190);
+    --panel: oklch(0.12 0.03 232);
+    --panel-foreground: oklch(0.95 0.03 195);
+    --sombra-color: oklch(0.8 0.13 195 / 20%);
     --sombra-negra: oklch(0 0 0 / 45%);
+    --hud-rejilla: oklch(0.8 0.12 195 / 6%);
+    --hud-linea: oklch(0.8 0.13 195 / 26%);
+    --hud-nodo: oklch(0.85 0.13 195);
 }
 
 @layer base {
@@ -139,32 +153,32 @@
 }
 /* Gráficas y mapa: tokens propios, con pasos seleccionados para cada modo (validados contra su superficie). */
 :root {
-    --viz-surface: #fffaf5;
-    --viz-ink: #1a120d;
-    --viz-ink-2: #5c3a24;
-    --viz-muted: #8a6448;
-    --viz-grid: #f1e2d3;
-    --viz-axis: #dfc3a8;
-    --viz-sin-datos: #dcc4ae;
+    --viz-surface: #f6fbfd;
+    --viz-ink: #0b1a22;
+    --viz-ink-2: #23485a;
+    --viz-muted: #4d7183;
+    --viz-grid: #dcecf2;
+    --viz-axis: #b5d3de;
+    --viz-sin-datos: #c3d8e0;
     --viz-temperatura: #eb6834;
     --viz-humedad: #2a78d6;
     --viz-precipitacion: #1baf7a;
-    --viz-validos: #ea6a1f;
-    --viz-rechazados: #8f3511;
+    --viz-validos: #0e8fa8;
+    --viz-rechazados: #b4413a;
 }
 .dark {
-    --viz-surface: #1c1714;
-    --viz-ink: #f7ebe0;
-    --viz-ink-2: #e0c3a8;
-    --viz-muted: #a8876c;
-    --viz-grid: #2f2620;
-    --viz-axis: #43352a;
-    --viz-sin-datos: #5a4636;
+    --viz-surface: #0d1d27;
+    --viz-ink: #e6f6fb;
+    --viz-ink-2: #a9d3e2;
+    --viz-muted: #6d97a8;
+    --viz-grid: #16303d;
+    --viz-axis: #24475a;
+    --viz-sin-datos: #2e4b5a;
     --viz-temperatura: #d95926;
     --viz-humedad: #3987e5;
     --viz-precipitacion: #199e70;
-    --viz-validos: #e3701e;
-    --viz-rechazados: #9c3f16;
+    --viz-validos: #22c3dc;
+    --viz-rechazados: #e0605a;
 }
 
 /* Popups y controles del mapa: cristal translúcido con los colores del tema. */
@@ -174,7 +188,7 @@
     color: var(--popover-foreground);
     background: color-mix(in oklch, var(--popover) 72%, transparent);
     backdrop-filter: blur(12px);
-    box-shadow: 0 10px 30px rgb(0 0 0 / 0.18), 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.18), 0 0 0 1px color-mix(in oklch, var(--primary) 30%, transparent);
 }
 .popup-cristal .maplibregl-popup-tip {
     display: none;
@@ -193,7 +207,7 @@
     border-color: var(--muted-foreground);
 }
 
-/* Sombras y movimiento. Las animaciones solo se activan si el usuario no pidió reducir movimiento. */
+/* Sombras, marcos HUD y movimiento. Las animaciones solo se activan si el usuario no pidió reducir movimiento. */
 @layer components {
     .sombra-suave {
         box-shadow: 0 1px 2px var(--sombra-negra), 0 12px 32px -14px var(--sombra-color);
@@ -204,6 +218,70 @@
     .elevable:hover {
         box-shadow: 0 2px 6px var(--sombra-negra), 0 18px 36px -12px color-mix(in oklch, var(--primary) 45%, transparent);
     }
+    /* Cristal: las tarjetas dejan ver la rejilla del fondo. */
+    .cristal {
+        backdrop-filter: blur(10px) saturate(1.2);
+    }
+    /* Esquinas de visor HUD. */
+    .hud-marco {
+        position: relative;
+    }
+    .hud-marco::before {
+        --c: color-mix(in oklch, var(--primary) 85%, transparent);
+        --l: 12px;
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        border-radius: inherit;
+        background:
+            linear-gradient(var(--c), var(--c)) top left / var(--l) 1.5px no-repeat,
+            linear-gradient(var(--c), var(--c)) top left / 1.5px var(--l) no-repeat,
+            linear-gradient(var(--c), var(--c)) top right / var(--l) 1.5px no-repeat,
+            linear-gradient(var(--c), var(--c)) top right / 1.5px var(--l) no-repeat,
+            linear-gradient(var(--c), var(--c)) bottom left / var(--l) 1.5px no-repeat,
+            linear-gradient(var(--c), var(--c)) bottom left / 1.5px var(--l) no-repeat,
+            linear-gradient(var(--c), var(--c)) bottom right / var(--l) 1.5px no-repeat,
+            linear-gradient(var(--c), var(--c)) bottom right / 1.5px var(--l) no-repeat;
+        transition: --l 200ms ease;
+    }
+    /* Foco que sigue al puntero (EfectosHud publica --mx y --my). Queda detrás del contenido. */
+    .foco {
+        position: relative;
+        isolation: isolate;
+    }
+    .foco::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        border-radius: inherit;
+        opacity: 0;
+        transition: opacity 250ms ease;
+        background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklch, var(--primary) 16%, transparent), transparent 70%);
+    }
+    .foco:hover::after {
+        opacity: 1;
+    }
+    /* Etiqueta técnica en mayúsculas y monoespaciada. */
+    .hud-etiqueta {
+        font-family: var(--font-mono), ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+    }
+    /* Texto con resplandor en modo oscuro. */
+    .dark .brillo-texto {
+        text-shadow: 0 0 12px color-mix(in oklch, var(--primary) 55%, transparent);
+    }
+}
+
+@property --l {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 12px;
 }
 
 @keyframes entrada {
@@ -225,6 +303,72 @@
 @keyframes brillo {
     from { background-position: 200% 0; }
     to { background-position: -200% 0; }
+}
+@keyframes vista-derecha {
+    from { opacity: 0; transform: translateX(28px); filter: blur(4px); }
+}
+@keyframes vista-izquierda {
+    from { opacity: 0; transform: translateX(-28px); filter: blur(4px); }
+}
+@keyframes barrido {
+    from { transform: translateY(-10vh); }
+    to { transform: translateY(110vh); }
+}
+@keyframes latido {
+    0%, 100% { opacity: 0.35; r: 1.6; }
+    50% { opacity: 1; r: 2.6; }
+}
+@keyframes flujo {
+    to { background-position: 24px 0; }
+}
+@keyframes flujo-vertical {
+    to { background-position: 0 24px; }
+}
+@keyframes pulso-hud {
+    0%, 100% { box-shadow: 0 0 0 1px color-mix(in oklch, var(--primary) 40%, transparent), 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent); }
+    50% { box-shadow: 0 0 0 1px color-mix(in oklch, var(--primary) 80%, transparent), 0 0 26px 2px color-mix(in oklch, var(--primary) 35%, transparent); }
+}
+@keyframes onda {
+    from { opacity: 0.9; transform: translate(-50%, -50%) scale(0.2); }
+    to { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes parpadeo {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+}
+@keyframes escaneo {
+    from { background-position: -100% 0; }
+    to { background-position: 200% 0; }
+}
+
+/* Pulso de clic: un anillo que se expande donde se pulsa (lo crea EfectosHud). */
+.onda-clic {
+    position: fixed;
+    z-index: 100;
+    width: 70px;
+    height: 70px;
+    border-radius: 9999px;
+    pointer-events: none;
+    border: 1.5px solid var(--primary);
+    box-shadow: 0 0 16px color-mix(in oklch, var(--primary) 60%, transparent), inset 0 0 12px color-mix(in oklch, var(--primary) 40%, transparent);
+    animation: onda 550ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+/* Conector entre fases: líneas de datos en movimiento. */
+.conector {
+    background-image: repeating-linear-gradient(90deg, color-mix(in oklch, var(--primary) 85%, transparent) 0 8px, transparent 8px 12px);
+    background-size: 24px 100%;
+    opacity: 0.35;
+}
+.conector-vertical {
+    background-image: repeating-linear-gradient(180deg, color-mix(in oklch, var(--primary) 85%, transparent) 0 8px, transparent 8px 12px);
+    background-size: 100% 24px;
+    opacity: 0.35;
+}
+.conector[data-activo="true"],
+.conector-vertical[data-activo="true"] {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px var(--primary));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -257,9 +401,54 @@
     .elevable:hover {
         transform: translateY(-3px);
     }
+    .hud-marco:hover::before {
+        --l: 20px;
+    }
     .brillo {
         background-image: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.35) 50%, transparent 65%);
         background-size: 200% 100%;
         animation: brillo 1.6s linear infinite;
+    }
+    .vista-derecha {
+        animation: vista-derecha 420ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    }
+    .vista-izquierda {
+        animation: vista-izquierda 420ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    }
+    .barrido {
+        animation: barrido 9s linear infinite;
+    }
+    .latido {
+        animation: latido 3.2s ease-in-out infinite;
+        animation-delay: var(--retraso, 0ms);
+    }
+    .conector[data-activo="true"] {
+        animation: flujo 0.6s linear infinite;
+    }
+    .conector-vertical[data-activo="true"] {
+        animation: flujo-vertical 0.6s linear infinite;
+    }
+    .pulso-hud {
+        animation: pulso-hud 1.8s ease-in-out infinite;
+    }
+    .parpadeo {
+        animation: parpadeo 1.4s steps(2, jump-none) infinite;
+    }
+    .escaneo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 1;
+        border-radius: inherit;
+        background: linear-gradient(90deg, transparent, color-mix(in oklch, var(--primary) 22%, transparent), transparent) no-repeat;
+        background-size: 50% 100%;
+        animation: escaneo 2.4s ease-in-out infinite;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .onda-clic {
+        display: none;
     }
 }

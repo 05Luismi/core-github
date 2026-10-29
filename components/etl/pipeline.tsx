@@ -1,7 +1,7 @@
 "use client"
 
-import { ArrowDownIcon, ArrowRightIcon } from "lucide-react"
 import * as React from "react"
+import { cn } from "cn"
 
 import { EstadoFaseBadge } from "@/components/etl/estado-fase"
 import { Button } from "@/components/ui/button"
@@ -136,10 +136,17 @@ export function VisualizacionPipeline({
       <ol className="grid grid-cols-1 gap-2 lg:grid-cols-[repeat(5,minmax(0,1fr))] lg:gap-0">
         {fases.map((f, i) => (
           <React.Fragment key={f.titulo}>
-            <li className="relative flex flex-col gap-2 rounded-xl bg-card p-3 ring-1 ring-foreground/10 lg:mr-5">
+            <li
+              style={{ "--retraso": `${i * 90}ms` } as React.CSSProperties}
+              className={cn(
+                "entrada elevable hud-marco foco cristal sombra-suave relative flex flex-col gap-2 rounded-xl bg-card p-3 ring-1 ring-primary/15 lg:mr-5",
+                f.estado === "en_curso" && "pulso-hud escaneo",
+                f.estado === "completada" && "ring-primary/35"
+              )}
+            >
               <div className="flex flex-wrap items-center justify-between gap-1">
                 <h3 className="text-sm font-semibold">
-                  <span className="text-muted-foreground">{i + 1}.</span> {f.titulo}
+                  <span className="hud-etiqueta mr-1 text-primary-strong">{String(i + 1).padStart(2, "0")}</span> {f.titulo}
                 </h3>
                 <EstadoFaseBadge estado={f.estado} />
               </div>
@@ -161,15 +168,16 @@ export function VisualizacionPipeline({
                 ))}
               </div>
               {i < fases.length - 1 && (
-                <ArrowRightIcon
+                <span
                   aria-hidden
-                  className="absolute top-1/2 -right-5 hidden size-5 -translate-y-1/2 text-muted-foreground lg:block"
+                  data-activo={f.estado === "completada"}
+                  className="conector absolute top-1/2 -right-5 hidden h-0.5 w-5 -translate-y-1/2 lg:block"
                 />
               )}
             </li>
             {i < fases.length - 1 && (
               <li aria-hidden className="flex justify-center lg:hidden">
-                <ArrowDownIcon className="size-4 text-muted-foreground" />
+                <span data-activo={f.estado === "completada"} className="conector-vertical block h-6 w-0.5" />
               </li>
             )}
           </React.Fragment>

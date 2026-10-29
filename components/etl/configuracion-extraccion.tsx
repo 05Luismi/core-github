@@ -72,7 +72,7 @@ function Paso({
         <span
           className={cn(
             "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-300",
-            listo ? "bg-primary text-primary-foreground shadow-md shadow-primary/40" : "bg-black text-primary"
+            listo ? "bg-primary text-primary-foreground shadow-md shadow-primary/40" : "bg-panel text-primary"
           )}
         >
           {listo ? <CheckIcon aria-label="completado" className="aparecer size-3.5" /> : n}
@@ -119,7 +119,7 @@ function Cifra({ etiqueta, valor }: { etiqueta: string; valor: number | null }) 
   const animado = useNumeroAnimado(valor ?? 0)
   return (
     <div className="flex flex-col items-center gap-0.5">
-      <dt className="text-[11px] tracking-wide text-orange-100/60 uppercase">{etiqueta}</dt>
+      <dt className="text-[11px] tracking-wide text-panel-foreground/60 uppercase">{etiqueta}</dt>
       <dd className="text-xl font-bold text-primary tabular-nums">{valor === null ? "—" : formatearEntero(animado)}</dd>
     </div>
   )
@@ -192,7 +192,7 @@ export function ConfiguracionExtraccion({ etl }: { etl: PipelineEtl }) {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-black text-primary shadow-md shadow-primary/25">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-panel text-primary shadow-md shadow-primary/25">
             <SlidersHorizontalIcon aria-hidden className="size-4.5" />
           </span>
           <div className="flex flex-col gap-0.5">
@@ -223,7 +223,7 @@ export function ConfiguracionExtraccion({ etl }: { etl: PipelineEtl }) {
                     <span
                       className={cn(
                         "flex size-4 shrink-0 items-center justify-center rounded-full border transition-all duration-200",
-                        activa ? "border-black bg-black text-primary" : "border-primary/40 group-hover:border-primary"
+                        activa ? "border-panel bg-panel text-primary" : "border-primary/40 group-hover:border-primary"
                       )}
                     >
                       {activa && <CheckIcon aria-hidden className="aparecer size-3" />}
@@ -283,7 +283,7 @@ export function ConfiguracionExtraccion({ etl }: { etl: PipelineEtl }) {
           </Paso>
 
           <Paso n={3} titulo="Resumen" icono={DownloadCloudIcon} listo={errores.length === 0} retraso={160}>
-            <dl className="grid grid-cols-3 gap-2 rounded-xl bg-black p-3 text-center shadow-lg shadow-primary/20">
+            <dl className="grid grid-cols-3 gap-2 rounded-xl bg-panel p-3 text-center shadow-lg shadow-primary/20">
               <Cifra etiqueta="Peticiones" valor={ciudades.length} />
               <Cifra etiqueta="Días" valor={dias || null} />
               <Cifra etiqueta="Registros" valor={dias ? ciudades.length * dias * 24 : null} />
